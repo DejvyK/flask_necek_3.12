@@ -1,0 +1,21 @@
+nav {
+    background: lightblue;
+}
+
+body {
+    background: rgb(228, 220, 220);
+
+}
+
+
+
+.koleso {
+    height: 40vw;
+    width:  40vw;
+    background: lightblue;
+    margin: 0 auto;
+    border-radius: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
