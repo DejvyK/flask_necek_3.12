@@ -1,0 +1,7 @@
+{
+    "SECRET_KEY" : "hjshjsdfsdfhdjah kjshkvsdjdhjs",
+    "MYSQL_USER" : "",
+    "MYSQL_PASSWORD" : "",
+    "MYSQL_HOST" : "",
+    "MYSQL_DB" : ""
+}

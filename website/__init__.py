@@ -1,28 +1,42 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask import request
-from flask import redirect
-from flask import flash
-from flask import url_for
-from flask import current_app
-import urllib.request 
-from urllib.parse import urlparse,urljoin
-from bs4 import BeautifulSoup
-import requests,json ,uuid,pathlib,os
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager, login_manager
 
-db = SQLAlchemy()
-DB_NAME = "database.db"
+from website.configs import Config
+from website.db import DB
 
-def create_app():
+login_manager = LoginManager()
+login_manager.login_view = "auth.authorize_user"
+login_manager.login_message_category = "info"
+
+bcrypt = Bcrypt()
+db = DB()
+
+
+def create_app(config_class=Config):
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'hjshjsdfsdfhdjah kjshkvsdjdhjs'
-    app.config["SQLALCHEMY_DATABASE_URI"]= f'sqlite:///{DB_NAME}'
-    db.init_app(app)
-    
-    from .views import views
-    from .auth import auth
+    app.config.from_object(Config)
 
-    app.register_blueprint(views, url_prefix='/')
-    app.register_blueprint(auth, url_prefix='/')
+    bcrypt.init_app(app)
+    db.init_app(app)
+    db.init_app(app)
+    login_manager.init_app(app)
+
+    from website.blueprints.\
+        main.routes import main
+
+    from website.blueprints.\
+        api.routes import api
+
+    from website.blueprints.\
+        auth.routes import auth
+
+    from website.blueprints.\
+        errors.handlers import errors
+
+    app.register_blueprint(main)
+    # app.register_blueprint(api)
+    app.register_blueprint(auth)
+    # app.register_blueprint(errors)
 
     return app
