@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block title %} Sign_up {% endblock %}
 
 {% block content %}
-<form method="post">
+<form method="post" action="{{url_for('auth.register_user')}}">
   <div class="form-group">
     <label for="email">Tvá e-mailová adresa</label>
     <input

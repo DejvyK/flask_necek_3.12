@@ -19,7 +19,6 @@ def create_app(config_class=Config):
 
     bcrypt.init_app(app)
     db.init_app(app)
-    db.init_app(app)
     login_manager.init_app(app)
 
     from website.blueprints.\
@@ -35,7 +34,7 @@ def create_app(config_class=Config):
         errors.handlers import errors
 
     app.register_blueprint(main)
-    # app.register_blueprint(api)
+    app.register_blueprint(api)
     app.register_blueprint(auth)
     # app.register_blueprint(errors)
 
