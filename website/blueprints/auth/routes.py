@@ -3,6 +3,8 @@ from flask_login import login_required, logout_user, login_user
 
 from website import bcrypt, login_manager
 from website.models.users import User
+import json
+
 
 auth = Blueprint('auth', __name__)
 
@@ -11,17 +13,13 @@ def authorize_user():
     if request.method=="POST":
         email = request.form.get("email")
         password = request.form.get("password")
-        curr_user = User.get(by="email", value=email)
-        print (curr_user)
-        try:
-            if curr_user and bcrypt.check_password_hash(curr_user.password, password):
-                x = login_user(curr_user, remember=True)
-                return redirect(url_for('main.home'))
-        except Exception as err:
-            print (err)
-            return redirect(url_for('main.login'))
+        curr_user = User.get(by="email", value=email, getrandom=True)
+        print (curr_user.email)
+        if curr_user and bcrypt.check_password_hash(curr_user.password, password):
+            x = login_user(curr_user, remember=True)
+            return jsonify({'status' : 'successful'})
+        return jsonify({'status' : 'error'})
 
-    return render_template("login.html", boolean=True)
 
 @auth.route("/logout")
 @login_required
@@ -66,14 +64,8 @@ def register_user():
         try:
             User.add(new_user)
             flash ('successful!')
-            return redirect(url_for('main.home'))
+            return jsonify({'status' : 'successful'})
         except Exception as err:
             flash ('sorry something went wrong')
             print (err)
-            return redirect(url_for('main.signup'))
-
-
-# @auth.route('/', methods= ['GET'])
-# def stuff():
-#     stahp = "1"
-#     return jsonify(stahp)
+            return jsonify({'status' : 'error'})

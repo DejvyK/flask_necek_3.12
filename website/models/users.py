@@ -4,7 +4,7 @@ from website.models.master import Model
 
 
 @login_manager.user_loader
-def load_user(id):
+def load_user(_id):
     return User.get(by="_id", value=_id)
 
 class User(Model, UserMixin):

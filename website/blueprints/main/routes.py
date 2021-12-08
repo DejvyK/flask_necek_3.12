@@ -1,10 +1,13 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import current_user
 
 main = Blueprint('main', __name__)
 
 @main.route('/')
 def home():
+    if current_user.is_authenticated:
+        print (current_user.email)
+        
     return render_template("home.html")
 
 

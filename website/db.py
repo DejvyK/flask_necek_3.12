@@ -4,7 +4,7 @@ class DB (MySQL):
     def __init__(self, app=None):
         super().__init__(app=app)
 
-    def get (self, tablename, col='column', value='value', getrandom=False, getall=False, getmany=False):
+    def get(self, tablename, col='column', value='value', getrandom=False, getall=False, getmany=False):
         statement = (f"""SELECT * FROM {tablename}
         WHERE {col} = "{value}" """)
 
