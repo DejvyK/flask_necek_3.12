@@ -15,13 +15,14 @@ class User(Model, UserMixin):
     def get_insert_statement(cls, model):
         statement = (f"""
         INSERT INTO {cls.tablename}
-            (_id, email, fname, lname, password)
+            (_id, email, fname, lname, password, admin)
         VALUES
-            (%s, %s, %s, %s, %s)
+            (%s, %s, %s, %s, %s, %s)
         """)
         
         insertions = [model._id, model.email,
-            model.fname, model.lname, model.password]
+            model.fname, model.lname, model.password,
+            model.admin]
 
         return statement, insertions
 
@@ -35,6 +36,7 @@ class User(Model, UserMixin):
             fname varchar(30),
             lname varchar(30),
             password varchar(100) NOT NULL,
+            admin int DEFAULT 0,
             upldate datetime DEFAULT CURRENT_TIMESTAMP(),
             moddate datetime DEFAULT CURRENT_TIMESTAMP()
         )
@@ -51,13 +53,13 @@ class User(Model, UserMixin):
             password = %s,
             moddate = CURRENT_TIMESTAMP()
         WHERE
-            id = %s,
+            id = %s
         """)
 
         updates = [model.email, model.fname,
             model.lname, model.password]
 
-        return statement
+        return statement, updates
 
     def __init__(self, mdict):
         super().__init__(mdict)
@@ -65,8 +67,8 @@ class User(Model, UserMixin):
         self.fname = mdict['fname']
         self.lname = mdict['lname']
         self.password = mdict['password']
-
-
+        self.admin = mdict['admin']
+    
     @property
     def as_dict(self):
         return {

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <main>
+        <h1>
+            This is the admin page
+        </h1>
+        {% if queues %}
+        <div class="queue_list">
+            {% for queue in queues %}
+                <p>
+                    {{queue._id}}
+                </p>
+                <div class="users_ctnr">
+                    {% for user in queue.data_as_users() %}
+                        {% if user %}
+                        <div class="user_ctnr">
+                            <p>
+                                Position: {{loop.index}}
+                            </p>
+                            <p>
+                                {{user.fname}}
+                            </p>
+                            <p>
+                                {{user.email}}
+                            </p>
+                            <form action="{{url_for('api.remove_from_queue', user_id=user._id)}}" method="POST">
+                                <button type="submit" class="btn btn-secondary" data-user_id="{{user._id}}">
+                                    Remove
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %} 
+        </div>
+        {% else %}
+        <div>
+            <p>
+                There are no queues active.
+            </p>
+            <p>
+                To activate a queue, click here.
+            </p>
+            <form action="{{url_for('admin.create_queue')}}">
+                <button type="submit" class="btn btn-primary">
+                    new queue
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </main>
+
+{% endblock %}

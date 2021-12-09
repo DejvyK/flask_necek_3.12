@@ -8,7 +8,6 @@ body {
 }
 
 
-
 .koleso {
     height: 40vw;
     width:  40vw;
@@ -18,4 +17,26 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.users_ctnr{
+    display: flex;
+    gap: 1em;
+    flex-flow: wrap;
+    width: 33vw;
+}
+
+.user_ctnr{
+    background-color: blue;
+    color: #fff;
+    text-align: center;
+    padding: .25em;
+    border-radius: .9em;
+    font-weight: 600;
+}
+
+.message_blob_ctnr{
+    display: flex;
+    flex-flow: column;
+    align-items: center;
 }

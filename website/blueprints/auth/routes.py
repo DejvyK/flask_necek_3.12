@@ -3,6 +3,7 @@ from flask_login import login_required, logout_user, login_user
 
 from website import bcrypt, login_manager
 from website.models.users import User
+from website.models.admincode import AdminCode
 import json
 
 
@@ -13,12 +14,18 @@ def authorize_user():
     if request.method=="POST":
         email = request.form.get("email")
         password = request.form.get("password")
-        curr_user = User.get(by="email", value=email, getrandom=True)
-        print (curr_user.email)
+        curr_user = User.get(by="email", value=email)
+        print (email)
+        print (password)
         if curr_user and bcrypt.check_password_hash(curr_user.password, password):
-            x = login_user(curr_user, remember=True)
-            return jsonify({'status' : 'successful'})
-        return jsonify({'status' : 'error'})
+            login_user(curr_user, remember=True)
+            flash ('success')
+            if curr_user.admin==1:
+                next_page = request.args.get('next')
+                return redirect(url_for('main.admin'))
+            return redirect(url_for('main.home'))
+        flash ('wrong email or password')
+        return redirect(url_for('main.login'))
 
 
 @auth.route("/logout")
@@ -26,11 +33,11 @@ def authorize_user():
 def logout():
     try:
         logout_user()
+        next_page = request.args.get('next')
+        return redirect(url_for('main.home'))
     except Exception as err:
         print (err)
-    finally:
-        return redirect(url_for('main.home'))
-
+        return redirect(url_for('main.login'))
 
 @auth.route('/register_user', methods=['GET', 'POST'])
 def register_user():
@@ -40,6 +47,7 @@ def register_user():
         prijmeni = request.form.get("prijmeni")
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
+        admincode = request.form.get("admincode")
 
         if len(email) < 4:
             flash("email musí mít alespoň 4 znaky",category="chyba")
@@ -56,9 +64,17 @@ def register_user():
             "email" : email,
             "fname" : krestni,
             "lname" : prijmeni,
-            "password" : bcrypt.generate_password_hash(password1).decode('utf8')
+            "password" : bcrypt.generate_password_hash(password1).decode('utf8'),
+            "admin" : 0,
         }
 
+        check_admin_code = AdminCode.get(by="code", value=admincode)
+
+        print (check_admin_code)
+        if (check_admin_code):
+            mdict['admin'] = 1
+
+    
         new_user = User(mdict)
 
         try:
