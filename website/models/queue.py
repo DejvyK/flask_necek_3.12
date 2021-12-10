@@ -1,17 +1,6 @@
 from website.models.master import Model
 from website.models.users import User
-"""
-how should I work on this queue system?
 
-1. a user logs in, creates an account.
-2. from the homepage, a queue button will appear
-3. add to queue adds user to the bottom of the queue list
-
-4. from the queue list, they can see there own position in the list, #4, #2 etc.
-
-5. on the backend, an administrator can control positioning
-6. 
-"""
 class Queue(Model):
     mtype = 'queue'
     tablename = 'queues'

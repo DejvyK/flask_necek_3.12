@@ -43,20 +43,12 @@ def remove_from_queue(user_id):
     return redirect(url_for('main.admin'))
 
 
-
 @api.route('/get_position/<string:user_id>', methods=["GET", "POST"])
 def get_position(user_id):
     active_queue = Queue.get(by="active", value="1")
     data_list = active_queue.data.split('$')
     position = data_list.index(user_id)
     return position
-
-
-
-
-
-
-
 
 
 # @api.route('/add_admincode>', methods=["GET", "POST"])
