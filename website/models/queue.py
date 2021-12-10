@@ -56,7 +56,6 @@ class Queue(Model):
         self.active = mdict['active']
         self.user_id = mdict['user_id']
 
-
     def remove_user(self, user_id):
         data_list = self.data.split('$')
         data_list.remove(user_id)
@@ -67,8 +66,6 @@ class Queue(Model):
         except Exception as err:
             print (err)
             return False
-
-
 
     def add_user(self, user_id):
         data_list = self.data.split('$')

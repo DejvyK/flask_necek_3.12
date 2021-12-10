@@ -20,6 +20,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-blop.css') }}">
 
+    {% if title %}
+      <title>
+          {{title}}
+      </title>
+    {% else %}
+      <title>
+          Flask App
+      </title>
+    {% endif %}
+    
     <title>{% block title %}Home{% endblock  %}</title>
 </head>
 

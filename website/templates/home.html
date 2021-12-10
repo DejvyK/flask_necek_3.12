@@ -1,68 +1,69 @@
 {% extends 'base.html' %}
 
-
-{% block title %}
-    Home
-{% endblock  %}
-
 {% block content %}
-    {% if current_user.is_authenticated %}
-        <h1>
-            Available Queues
-        </h1>
-        {% for queue in queues  %}
-        <section>
-            <form method="POST" action="{{url_for('api.add_to_queue')}}">
-                <input
-                    type="text"
-                    name="user_id"
-                    id="user_id"
-                    value="{{current_user._id}}"
-                    hidden="true"
-                    readonly="true"
-                >
-                <input
-                    type="text"
-                    name="queue_id"
-                    id="queue_id"
-                    value="{{queue._id}}"
-                    hidden="true"
-                    readonly="true"
-                >
-                <button type="submit" class="btn btn-primary">
-                    Join Queue
-                </button>
-                <p>
-                    At position {{queue.get_next_opening()}}
-                </p>
-            </form>
-        </section>
-        {% endfor %}
-    {% else %}
- 
-        <a href="{{url_for('main.login')}}">
-            Please login to join the queue
-        </a>
+<script src="{{url_for('static', filename='js/assets/three.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/position_checker.js')}}"></script>
 
-    {% endif %}
+    <main>
+        {% if current_user.is_authenticated %}
+            <h1>
+                Available Queues
+            </h1>
+            {% for queue in queues  %}
+            <section>
+                <form method="POST" action="{{url_for('api.add_to_queue')}}">
+                    <input
+                        type="text"
+                        name="user_id"
+                        id="user_id"
+                        value="{{current_user._id}}"
+                        hidden="true"
+                        readonly="true"
+                    >
+                    <input
+                        type="text"
+                        name="queue_id"
+                        id="queue_id"
+                        value="{{queue._id}}"
+                        hidden="true"
+                        readonly="true"
+                    >
+                    <button type="submit" class="btn btn-primary">
+                        Join Queue
+                    </button>
+                    <p>
+                        At position {{queue.get_next_opening()}}
+                    </p>
+                </form>
+            </section>
+            {% endfor %}
+        {% else %}
+    
+            <a href="{{url_for('main.login')}}">
+                Please login to join the queue
+            </a>
 
-
-    <div class="queues_ctnr">
-
-    </div>
-
-    <div class="message_blob_ctnr">
-        {% if message %}
-            <p>
-                Join the queue now at position {{position}}.
-            </p>
         {% endif %}
-        <div class="blob blue" id="koleso_home" >
-            <p>
-                {{position}}
-            </p>
+
+
+        <div class="queues_ctnr">
+
         </div>
-    </div>
+
+        <div class="message_blob_ctnr">
+            {% if message %}
+                <p>
+                    Join the queue now at position {{position}}.
+                </p>
+            {% endif %}
+            <div class="blob blue" id="koleso_home" >
+                <p>
+                    {{position}}
+                </p>
+            </div>
+        </div>
+    </main>
+
 {% endblock %}
 
 

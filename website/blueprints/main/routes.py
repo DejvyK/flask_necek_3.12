@@ -20,7 +20,11 @@ def home():
     #     message = True
     #     position = active_queue.get_next_opening()
 
-    return render_template("home.html", queues=queues, position=position, message=message)
+    return render_template("home.html",
+        title="Home",
+        queues=queues,
+        position=position,
+        message=message)
 
 @main.route('/admin')
 @login_required
@@ -31,7 +35,9 @@ def admin():
             return redirect(url_for('main.home'))
 
     queue = Queue.get(by="user_id", value=current_user._id)
-    return render_template("admin.html", queue=queue)
+    return render_template("admin.html",
+        title="Admin",
+        queue=queue)
 
 
 @main.route('/login', methods=['GET', 'POST'])
@@ -40,7 +46,7 @@ def login():
         flash ("You're already logged in, please logout first")
         return redirect(url_for('main.home'))
 
-    return render_template("login.html")
+    return render_template("login.html", title="Login")
 
 @main.route('/sign-up', methods=['GET', 'POST'])
 def signup():
@@ -48,5 +54,5 @@ def signup():
         flash ("You're already logged in, please logout first")
         return redirect(url_for('main.home'))
 
-    return render_template("sign_up.html")
+    return render_template("sign_up.html", title="Signup")
 
