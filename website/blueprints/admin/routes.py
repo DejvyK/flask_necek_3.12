@@ -11,6 +11,7 @@ def create_queue():
     mdict = {
         'data' : "",
         'active' : 1,
+        'user_id' : current_user._id
     }
     new_queue = Queue(mdict)
     try:

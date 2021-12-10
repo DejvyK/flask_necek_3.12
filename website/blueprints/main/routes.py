@@ -8,15 +8,19 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def home():
-    active_queue = Queue.get(by="active", value="1")
-    if current_user.is_authenticated:
-        position = active_queue.get_user_position(current_user._id)
-        message = False
-    else:
-        message = True
-        position = active_queue.get_next_opening()
+    position = 0
+    message = True
+    # queues = Queue.get(getall=True)
+    queues = Queue.get(by="active", value="1", getmany=True)
 
-    return render_template("home.html", position=position, message=message)
+    # if current_user.is_authenticated:
+    #     position = active_queue.get_user_position(current_user._id)
+    #     message = False
+    # else:
+    #     message = True
+    #     position = active_queue.get_next_opening()
+
+    return render_template("home.html", queues=queues, position=position, message=message)
 
 @main.route('/admin')
 @login_required
@@ -26,8 +30,8 @@ def admin():
             flash("you don't have access to that page")
             return redirect(url_for('main.home'))
 
-    queues = Queue.get(getall=True)
-    return render_template("admin.html", queues=queues)
+    queue = Queue.get(by="user_id", value=current_user._id)
+    return render_template("admin.html", queue=queue)
 
 
 @main.route('/login', methods=['GET', 'POST'])

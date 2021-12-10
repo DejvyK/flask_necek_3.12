@@ -19,7 +19,6 @@ def authorize_user():
         print (password)
         if curr_user and bcrypt.check_password_hash(curr_user.password, password):
             login_user(curr_user, remember=True)
-            flash ('success')
             if curr_user.admin==1:
                 next_page = request.args.get('next')
                 return redirect(url_for('main.admin'))
@@ -70,18 +69,23 @@ def register_user():
 
         check_admin_code = AdminCode.get(by="code", value=admincode)
 
-        print (check_admin_code)
+        # print (check_admin_code)
         if (check_admin_code):
             mdict['admin'] = 1
 
-    
         new_user = User(mdict)
 
         try:
             User.add(new_user)
+            login_user(new_user, remember=True)
+            next_page = request.args.get('next')
             flash ('successful!')
-            return jsonify({'status' : 'successful'})
+            if new_user.admin==1:
+                return redirect(url_for('main.admin'))
+            else:
+                return redirect(url_for('main.home'))
+
         except Exception as err:
-            flash ('sorry something went wrong')
-            print (err)
-            return jsonify({'status' : 'error'})
+            flash ('something went wrong!')
+            next_page = request.args.get('next')
+            return redirect(url_for('main.signup'))

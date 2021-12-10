@@ -14,18 +14,18 @@ how should I work on this queue system?
 """
 class Queue(Model):
     mtype = 'queue'
-    tablename = 'queue'
+    tablename = 'queues'
 
     @classmethod
     def get_insert_statement(cls, model):
         statement = (f"""
         INSERT INTO {cls.tablename}
-            (_id, data, active)
+            (_id, user_id, data, active)
         VALUES
-            (%s, %s, %s)
+            (%s, %s, %s, %s)
         """)
 
-        insertions = [model._id, model.data, model.active]
+        insertions = [model._id, model.user_id, model.data, model.active]
         
         return statement, insertions
 
@@ -34,12 +34,16 @@ class Queue(Model):
         statement = (f"""
         CREATE TABLE {cls.tablename}(
             _id varchar(30) PRIMARY KEY,
+            user_id varchar(30),
             data text,
             active int DEFAULT 0,
             upldate datetime DEFAULT CURRENT_TIMESTAMP(),
-            moddate datetime DEFAULT CURRENT_TIMESTAMP()
+            moddate datetime DEFAULT CURRENT_TIMESTAMP(),
+            FOREIGN KEY (user_id) REFERENCES users(_id)
+                ON UPDATE CASCADE
         )
         """)
+
         return statement
 
     @classmethod
@@ -61,6 +65,7 @@ class Queue(Model):
         super().__init__(mdict)
         self.data = mdict['data']
         self.active = mdict['active']
+        self.user_id = mdict['user_id']
 
 
     def remove_user(self, user_id):

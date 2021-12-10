@@ -12,13 +12,16 @@ api = Blueprint('api', __name__,
 
 @api.route('/create_tables', methods=["GET", "POST"])
 def create_tables():
+    Queue.mk_table()
     return redirect(url_for('main.home'))
 
 @api.route('/add_to_queue', methods=["GET", "POST"])
 def add_to_queue():
     user_id = request.form.get("user_id")
-    active_queue = Queue.get(by="active", value="1")
-    result = active_queue.add_user(user_id)
+    queue_id = request.form.get("queue_id")
+    
+    queue = Queue.get(by="_id", value=queue_id)
+    result = queue.add_user(user_id)
 
     if result:
         flash("we added you to the queue!")

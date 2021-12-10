@@ -26,7 +26,9 @@ class Note(Model):
             user_id varchar(30),
             data text,
             upldate datetime DEFAULT CURRENT_TIMESTAMP(),
-            moddate datetime DEFAULT CURRENT_TIMESTAMP()
+            moddate datetime DEFAULT CURRENT_TIMESTAMP(),
+            FOREIGN KEY (user_id) REFERENCES users(_id)
+                ON UPDATE CASCADE
         )""")
         
         return statement

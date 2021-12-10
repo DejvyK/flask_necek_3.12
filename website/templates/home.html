@@ -7,28 +7,49 @@
 
 {% block content %}
     {% if current_user.is_authenticated %}
-    <section>
-        <form method="POST" action="{{url_for('api.add_to_queue')}}">
-            <input
-                type="text"
-                name="user_id"
-                id="user_id"
-                value="{{current_user._id}}"
-                hidden="true"
-                readonly="true"
-            >
-            <button type="submit" class="btn btn-primary">
-                Join Queue
-            </button>
-        </form>
-    </section>
+        <h1>
+            Available Queues
+        </h1>
+        {% for queue in queues  %}
+        <section>
+            <form method="POST" action="{{url_for('api.add_to_queue')}}">
+                <input
+                    type="text"
+                    name="user_id"
+                    id="user_id"
+                    value="{{current_user._id}}"
+                    hidden="true"
+                    readonly="true"
+                >
+                <input
+                    type="text"
+                    name="queue_id"
+                    id="queue_id"
+                    value="{{queue._id}}"
+                    hidden="true"
+                    readonly="true"
+                >
+                <button type="submit" class="btn btn-primary">
+                    Join Queue
+                </button>
+                <p>
+                    At position {{queue.get_next_opening()}}
+                </p>
+            </form>
+        </section>
+        {% endfor %}
     {% else %}
-    <a href="">
-        Please login to join the queue
-    </a>
+ 
+        <a href="{{url_for('main.login')}}">
+            Please login to join the queue
+        </a>
 
     {% endif %}
 
+
+    <div class="queues_ctnr">
+
+    </div>
 
     <div class="message_blob_ctnr">
         {% if message %}

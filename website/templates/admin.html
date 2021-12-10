@@ -5,35 +5,30 @@
         <h1>
             This is the admin page
         </h1>
-        {% if queues %}
+        {% if queue %}
         <div class="queue_list">
-            {% for queue in queues %}
-                <p>
-                    {{queue._id}}
-                </p>
-                <div class="users_ctnr">
-                    {% for user in queue.data_as_users() %}
-                        {% if user %}
-                        <div class="user_ctnr">
-                            <p>
-                                Position: {{loop.index}}
-                            </p>
-                            <p>
-                                {{user.fname}}
-                            </p>
-                            <p>
-                                {{user.email}}
-                            </p>
-                            <form action="{{url_for('api.remove_from_queue', user_id=user._id)}}" method="POST">
-                                <button type="submit" class="btn btn-secondary" data-user_id="{{user._id}}">
-                                    Remove
-                                </button>
-                            </form>
-                        </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            {% endfor %} 
+            <div class="users_ctnr">
+                {% for user in queue.data_as_users() %}
+                    {% if user %}
+                    <div class="user_ctnr">
+                        <p>
+                            Position: {{loop.index}}
+                        </p>
+                        <p>
+                            {{user.fname}}
+                        </p>
+                        <p>
+                            {{user.email}}
+                        </p>
+                        <form action="{{url_for('api.remove_from_queue', user_id=user._id)}}" method="POST">
+                            <button type="submit" class="btn btn-secondary" data-user_id="{{user._id}}">
+                                Remove
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                {% endfor %} 
+            </div>
         </div>
         {% else %}
         <div>
