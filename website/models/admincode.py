@@ -48,3 +48,11 @@ class AdminCode(Model):
         super().__init__(mdict)
         self.code = mdict['code']
         
+
+    def __str__(self):
+        return (f"""
+        _id : {self._id}
+
+        upload date : {self.upldate}
+        last modified : {self.moddate}        
+        """)

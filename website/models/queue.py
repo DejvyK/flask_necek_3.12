@@ -94,3 +94,26 @@ class Queue(Model):
             for _id in user_ids
             if _id != False]
         return users
+
+    @staticmethod
+    def get_active_admin_queue(user_id):
+        all_admin_queues = Queue.get(by="user_id", value=user_id, getmany=True)
+        active = ""
+        for queue in all_admin_queues:
+            if queue.active==1:
+                return queue
+        return False
+
+
+
+    def __str__(self):
+        return (f"""
+        _id : {self._id}
+        user_id : {self.user_id}
+        active : {self.active}
+        data : {self.data}
+
+        upload date : {self.upldate}
+        last modified : {self.moddate}
+        
+        """)

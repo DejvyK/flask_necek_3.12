@@ -10,15 +10,7 @@ main = Blueprint('main', __name__)
 def home():
     position = 0
     message = True
-    # queues = Queue.get(getall=True)
     queues = Queue.get(by="active", value="1", getmany=True)
-
-    # if current_user.is_authenticated:
-    #     position = active_queue.get_user_position(current_user._id)
-    #     message = False
-    # else:
-    #     message = True
-    #     position = active_queue.get_next_opening()
 
     return render_template("home.html",
         title="Home",
@@ -34,10 +26,21 @@ def admin():
             flash("you don't have access to that page")
             return redirect(url_for('main.home'))
 
-    queue = Queue.get(by="user_id", value=current_user._id)
+    queues = Queue.get(by="user_id", value=current_user._id, getmany=True)
+
+    active_queue = ""
+    inactive_queues = []
+
+    for queue in queues:
+        if (queue.active):
+            active_queue = queue
+        else:
+            inactive_queues.append(queue)
+
     return render_template("admin.html",
         title="Admin",
-        queue=queue)
+        active_queue=active_queue,
+        inactive_queues=inactive_queues)
 
 
 @main.route('/login', methods=['GET', 'POST'])

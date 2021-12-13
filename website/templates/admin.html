@@ -5,46 +5,120 @@
         <h1>
             This is the admin page
         </h1>
-        {% if queue %}
-        <div class="queue_list">
-            <div class="users_ctnr">
-                {% for user in queue.data_as_users() %}
-                    {% if user %}
-                    <div class="user_ctnr">
-                        <p>
-                            Position: {{loop.index}}
-                        </p>
-                        <p>
-                            {{user.fname}}
-                        </p>
-                        <p>
-                            {{user.email}}
-                        </p>
-                        <form action="{{url_for('api.remove_from_queue', user_id=user._id)}}" method="POST">
-                            <button type="submit" class="btn btn-secondary" data-user_id="{{user._id}}">
-                                Remove
-                            </button>
-                        </form>
-                    </div>
-                    {% endif %}
-                {% endfor %} 
+
+        <form action="{{url_for('admin.create_queue')}}">
+            <button type="submit" class="btn btn-primary">
+                new queue
+            </button>
+            <p>
+                creating a new queue will automatically activate it 
+            </p>
+        </form>
+
+        {% if active_queue %}
+            <h1>
+                Active Queue
+            </h1>
+            <div class="about_active">
+                <p>
+                    About this queue
+                </p>
+                <p>
+                    Queue ID: {{active_queue._id}}
+                </p>
+                <p>
+                    Admin ID: {{active_queue.user_id}}
+                </p>
+                <p>
+                    Active: {{active_queue.active}}
+                </p>
+                <p>
+                    Count of users in the queue: {{active_queue.data.split('$') | length -1}}
+                </p>
             </div>
-        </div>
+            <div class="queue_list">
+                <div class="users_ctnr">
+                    {% for user in active_queue.data_as_users() %}
+                        {% if user %}
+                        <div class="user_ctnr">
+                            <p>
+                                Position: {{loop.index}}
+                            </p>
+                            <p>
+                                {{user.fname}}
+                            </p>
+                            <p>
+                                {{user.email}}
+                            </p>
+                            <form action="{{url_for('api.remove_from_queue', user_id=user._id, queue_id=active_queue._id)}}" method="POST">
+                                <button type="submit" class="btn btn-secondary">
+                                    Remove
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    {% endfor %} 
+                </div>
+            </div>
         {% else %}
-        <div>
-            <p>
-                There are no queues active.
-            </p>
-            <p>
-                To activate a queue, click here.
-            </p>
-            <form action="{{url_for('admin.create_queue')}}">
-                <button type="submit" class="btn btn-primary">
-                    new queue
-                </button>
-            </form>
-        </div>
         {% endif %}
+
+
+        <h2>
+            Inactive Queues
+        </h2>
+        <div class="inactive_queue_list">
+            {% if inactive_queues %}
+                <div class="inactive_queues_ctnr">
+                    {% for queue in inactive_queues %}
+                        <div class="inactive_queue">
+
+                            <p>
+                                ID: {{queue._id}}
+                            </p>
+                            <p>
+                                uploaded data: {{queue.upldate}}
+                            </p>
+                            <p>
+                                last modified: {{queue.moddate}}
+                            </p>
+                            <div>
+                                <form action="{{url_for('admin.delete_queue')}}" method="POST">
+                                    <input
+                                    type="text"
+                                    value="{{queue._id}}"
+                                    hidden="true"
+                                    readonly="true"
+                                    id="queue_id"
+                                    name="queue_id"
+                                    >
+                                    <button type="submit" class="btn btn-primary">
+                                        DELETE
+                                    </button>
+                                </form>
+                                <form action="{{url_for('admin.reactivate_queue')}}" method="POST">
+                                    <input
+                                    type="text"
+                                    value="{{queue._id}}"
+                                    hidden="true"
+                                    readonly="true"
+                                    id="queue_id"
+                                    name="queue_id"
+                                    >
+                                    <button type="submit" class="btn btn-primary">
+                                        REACTIVATE
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>
+                    no inactive queues
+                </p>
+            {% endif %}
+        </div>
     </main>
 
 {% endblock %}

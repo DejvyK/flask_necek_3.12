@@ -53,7 +53,7 @@ class User(Model, UserMixin):
             password = %s,
             moddate = CURRENT_TIMESTAMP()
         WHERE
-            id = %s
+            _id = %s
         """)
 
         updates = [model.email, model.fname,
@@ -81,4 +81,13 @@ class User(Model, UserMixin):
         }
     
 
-    
+    def __str__(self):
+        return (f"""
+        _id : {self._id}
+        fname : {self.fname}
+        admin : {self.admin}
+
+        upload date : {self.upldate}
+        last modified : {self.moddate}
+        
+        """)
