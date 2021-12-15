@@ -30,7 +30,6 @@
       </title>
     {% endif %}
     
-    <title>{% block title %}Home{% endblock  %}</title>
 </head>
 
 <body>
@@ -50,18 +49,17 @@
       <div class="collapse navbar-collapse" id="navbar">
         <div class="navbar-nav">
           
-          <a class="nav-item nav-link" id="home" href="/">Home</a>
+          <a class="nav-item nav-link" id="home" href="{{url_for('main.home')}}">Home</a>
 
           {% if current_user.admin == 1 %}
-            <a class="nav-item nav-link" id="admin" href="{{url_for('main.admin')}}">Admin</a>
+            <a class="nav-item nav-link" id="admin" href="{{url_for('admin.home')}}">Admin</a>
           {% endif %}
 
-          <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+          <a class="nav-item nav-link" id="logout" href="{{url_for('auth.logout')}}">Logout</a>
           
-
           {% if not current_user.is_authenticated %}
-            <a class="nav-item nav-link" id="login" href="/login">Login</a>
-            <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
+              <a class="nav-item nav-link" id="login" href="{{url_for('main.login')}}">Login</a>
+              <a class="nav-item nav-link" id="signUp" href="{{url_for('main.signup')}}">Sign Up</a>
           {% endif %}
          
         </div>

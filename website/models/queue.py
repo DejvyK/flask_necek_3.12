@@ -9,12 +9,14 @@ class Queue(Model):
     def get_insert_statement(cls, model):
         statement = (f"""
         INSERT INTO {cls.tablename}
-            (_id, user_id, data, active)
+            (_id, user_id, data, active, category, title)
         VALUES
-            (%s, %s, %s, %s)
+            (%s, %s, %s, %s, %s, %s)
         """)
 
-        insertions = [model._id, model.user_id, model.data, model.active]
+        insertions = [model._id, model.user_id,
+            model.data, model.active,
+            model.category, model.title]
         
         return statement, insertions
 
@@ -25,6 +27,8 @@ class Queue(Model):
             _id varchar(30) PRIMARY KEY,
             user_id varchar(30),
             data text,
+            category varchar(50),            
+            title text,
             active int DEFAULT 0,
             upldate datetime DEFAULT CURRENT_TIMESTAMP(),
             moddate datetime DEFAULT CURRENT_TIMESTAMP(),
@@ -41,12 +45,17 @@ class Queue(Model):
         SET
             data = %s,
             active = %s,
+            category = %s,
+            title = %s,
             moddate = CURRENT_TIMESTAMP()
         WHERE
             _id = %s
         """)
 
-        updates = [model.data, model.active, model._id]
+        updates = [model.data, model.active,
+            model.category, model.title,
+            model._id]
+
         return statement, updates
 
 
@@ -55,6 +64,8 @@ class Queue(Model):
         self.data = mdict['data']
         self.active = mdict['active']
         self.user_id = mdict['user_id']
+        self.category = mdict['category']
+        self.title = mdict['title']
 
     def remove_user(self, user_id):
         data_list = self.data.split('$')
@@ -104,14 +115,14 @@ class Queue(Model):
                 return queue
         return False
 
-
-
     def __str__(self):
         return (f"""
         _id : {self._id}
         user_id : {self.user_id}
         active : {self.active}
         data : {self.data}
+        category : {self.category}
+        title : {self.title}
 
         upload date : {self.upldate}
         last modified : {self.moddate}

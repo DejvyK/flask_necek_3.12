@@ -5,58 +5,39 @@
 <script src="{{url_for('static', filename='js/position_checker.js')}}"></script>
 
     <main>
-        {% if current_user.is_authenticated %}
-            <h1>
-                Available Queues
-            </h1>
-            {% for queue in queues  %}
-            <section>
-                <form method="POST" action="{{url_for('api.add_to_queue')}}">
-                    <input
-                        type="text"
-                        name="user_id"
-                        id="user_id"
-                        value="{{current_user._id}}"
-                        hidden="true"
-                        readonly="true"
-                    >
-                    <input
-                        type="text"
-                        name="queue_id"
-                        id="queue_id"
-                        value="{{queue._id}}"
-                        hidden="true"
-                        readonly="true"
-                    >
-                    <button type="submit" class="btn btn-primary">
-                        Join Queue
-                    </button>
-                    <p>
-                        At position {{queue.get_next_opening()}}
-                    </p>
-                </form>
-            </section>
-            {% endfor %}
-        {% else %}
-    
+        <h1>
+            Available Queues
+        </h1>
+        {% if not current_user.is_authenticated %}
             <a href="{{url_for('main.login')}}">
-                Please login to join the queue
+                Please login to join a queue
             </a>
-
         {% endif %}
-
-
-        <div class="queues_ctnr">
-
-        </div>
+        <section id="queues_ctnr">                
+            {% for category in organized_queues  %}
+                <h3>
+                    Category: {{category}}
+                </h3>
+                {% for queue in organized_queues[category]%}
+                    <p>
+                        ID: {{queue._id}}
+                    </p>
+                    <p>
+                        TITLE: {{queue.title}}
+                    </p>
+                    {{add_user_to_queue(queue)}}
+                {% endfor %}
+            {% endfor %}
+        </section>
 
         <div class="message_blob_ctnr">
             <div class="blob blue" id="koleso_home" >
                 <p>
-                    {{position}}
+                    1
                 </p>
             </div>
         </div>
+        
     </main>
 
 {% endblock %}

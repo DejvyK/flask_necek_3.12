@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+    <h1>
+        This is the Temporary Page
+    </h1>
+    <!-- <img src="{{qrcode('www.google.com')}}" alt="test"> -->
+    <img src="{{qrcode(url_for('main.home'))}}" alt="test">
+    <a href="">
+        Download this ticket
+    </a>
+
+
+</main>
+
+{% endblock %}

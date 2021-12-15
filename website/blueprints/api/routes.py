@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, redirect, url_for, request, flash
-
+from flask_login import login_required, current_user
 from website.models.notes import Note
 from website.models.users import User
 from website.models.admincode import AdminCode
@@ -7,6 +7,18 @@ from website.models.queue import Queue
 
 from secrets import token_hex
 import json
+
+# even if temp_user doesn't have an account
+# add user to queue (end) with qr-code
+# super-user, can print a ticket (qr code on the ticket)
+# join queue through qr code
+# webpage will show exact position
+
+# active-queues after midnight are reset, 
+# deactivated queues are deleted
+
+
+# add search bar for cats (last)
 
 api = Blueprint('api', __name__,
     url_prefix='/api')
@@ -17,12 +29,12 @@ def create_tables():
     return redirect(url_for('main.home'))
 
 @api.route('/add_to_queue', methods=["GET", "POST"])
+@login_required
 def add_to_queue():
-    user_id = request.form.get("user_id")
     queue_id = request.form.get("queue_id")
     
     queue = Queue.get(by="_id", value=queue_id)
-    result = queue.add_user(user_id)
+    result = queue.add_user(current_user._id)
 
     if result:
         flash("we added you to the queue!")
@@ -31,7 +43,7 @@ def add_to_queue():
 
     return redirect(url_for('main.home'))
 
-
+# one user sends 
 @api.route('/remove_from_queue/<string:user_id>/<string:queue_id>', methods=["GET", "POST"])
 def remove_from_queue(user_id, queue_id):
     active_queue = Queue.get(by="_id", value=queue_id)
@@ -41,7 +53,7 @@ def remove_from_queue(user_id, queue_id):
     else:
         flash ("something went wrong")
 
-    return redirect(url_for('main.admin'))
+    return redirect(url_for('admin.home'))
 
 
 @api.route('/get_position/<string:user_id>', methods=["GET", "POST"])
@@ -57,20 +69,3 @@ def check_position():
     test = {'test' : 'success'}
 
     return json.dumps(test)
-
-
-# @api.route('/add_admincode>', methods=["GET", "POST"])
-# def add_admincode():
-#     # code = token_hex(4)
-#     mdict = {
-#         'code' : code
-#     }
-
-#     new_code = AdminCode(mdict)
-
-#     try:
-#         AdminCode.add(new_code)
-#         return jsonify({'status' : 'successful'})
-#     except Exception as err:
-#         print(err)
-#         return jsonify({'status' : 'error'})
