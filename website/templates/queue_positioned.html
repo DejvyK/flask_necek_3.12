@@ -7,11 +7,23 @@
         Queue Positioned Page
     </h1>
     <p>
-        {{position}}
+        {{queue.title}}
+    </p>
+    <p>
+        {{queue.category}}
     </p>
     <p>
         {{queue._id}}
     </p>
+
+    <div class="message_blob_ctnr">
+        <div class="blob blue" id="koleso_home" >
+            <p>
+                {{position}}
+            </p>
+        </div>
+    </div>
+
 </main>
 
 {% endblock %}

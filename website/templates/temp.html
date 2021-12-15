@@ -6,13 +6,17 @@
     <h1>
         This is the Temporary Page
     </h1>
-    <!-- <img src="{{qrcode('www.google.com')}}" alt="test"> -->
-    <img src="{{qrcode(url_for('main.home'))}}" alt="test">
-    <a href="">
-        Download this ticket
+    <a
+        href="{{qrcode(url_for('main.queue_user_positioned', user_id=user_id, queue_id=queue_id))}}"
+        download="qrcode.png">
+        <img
+        src="{{qrcode(url_for('main.queue_user_positioned', user_id=user_id, queue_id=queue_id))}}"
+        alt="qr code"
+        >
     </a>
-
-
+    <p>
+        click the image to download the qr code
+    </p>
 </main>
 
 {% endblock %}

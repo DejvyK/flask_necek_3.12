@@ -39,21 +39,15 @@ def home():
         organized_queues=organized_queues,
         queues=queues)
 
-
-@main.route('/test')
-def test():
-    return render_template('test_qr.html')
-
 @main.route('/qr_code/<string:user_id>/<string:queue_id>')
 def temporary_page(user_id, queue_id):
-    # create a temporary users table that is wiped out at a particular time
-    
-    # or, should a jobs section be created? in which temporary processes take place...
-
     queue_model = Queue.get(by='_id', value=queue_id)
     temp_user = ""
     
-    return render_template('temp.html')
+    return render_template('temp.html',
+        user_id=user_id,
+        queue_id=queue_id,
+    )
 
 @main.route('/queues/<string:queue_id>')
 def queue(queue_id):
@@ -61,12 +55,25 @@ def queue(queue_id):
     return render_template('queue.html', queue_model=queue_model)
 
 
-@main.route('/queues/<string:user_id>/<string:queue_id>')
+@main.route('/user_queues/<string:user_id>/')
+def user_queues(user_id):
+    queue_models = Queue.get(getall=True)
+    
+    queues = [ queue for queue in queue_models if queue.has_user(user_id) ]
+    print (queues)
+
+
+    return render_template('user_queues.html',
+            queues=queues,
+            user_id=user_id,
+        )
+
+@main.route('/queue_positioned/<string:user_id>/<string:queue_id>')
 def queue_user_positioned(user_id, queue_id):
     queue_model = Queue.get(by='_id', value=queue_id)
     position = queue_model.get_user_position(user_id)
     return render_template('queue_positioned.html',
-            queue_model=queue_model,
+            queue=queue,
             position=position
         )
 
