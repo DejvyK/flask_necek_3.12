@@ -1,9 +1,12 @@
 from flask import Blueprint, jsonify, redirect, url_for, request, flash
 from flask_login import login_required, current_user
+
 from website.models.notes import Note
 from website.models.users import User
 from website.models.admincode import AdminCode
 from website.models.queue import Queue
+
+from website.utils.search_func import Leven
 
 from secrets import token_hex
 import json
@@ -69,3 +72,19 @@ def check_position():
     test = {'test' : 'success'}
 
     return json.dumps(test)
+
+@api.route('/search', methods=["GET", "POST"])
+def search():
+    query = request.form.get("query")
+    queues = Queue.get(getall=True)
+
+    for queue in queues:
+        print (queue._id)
+
+    search = Leven()
+
+
+    print (query)
+    # print (search)
+
+    return redirect(url_for('main.home'))

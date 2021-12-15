@@ -24,3 +24,14 @@ class Add_User_To_Queue(FlaskForm):
     submit_add_user_to_queue = SubmitField('Submit')
 
 
+class Search_Bar(FlaskForm):
+    query = StringField('Find a Queue',
+        validators= [
+            DataRequired()
+        ],
+        render_kw = {
+            'placeholder' : 'search',
+
+        }
+    )
+    submit_search_bar = SubmitField('Search')

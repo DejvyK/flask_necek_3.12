@@ -3,13 +3,12 @@ from flask_login import current_user, login_required
 from website import db
 from website.models.queue import Queue
 
-from collections import ChainMap
-
 
 # COMPONENTS
 from website.components.forms.add_user_to_queue import component as add_user_to_queue
 from website.components.forms.authorize_user import component as authorize_user
 from website.components.forms.register_user import component as register_user
+from website.components.forms.search_bar import component as search_bar
 
 main = Blueprint('main', __name__)
 
@@ -19,7 +18,8 @@ def load_components():
     return dict(
         add_user_to_queue=add_user_to_queue,
         authorize_user=authorize_user,
-        register_user=register_user
+        register_user=register_user,
+        search_bar=search_bar
     )
 
 @main.route('/')
@@ -30,7 +30,6 @@ def home():
 
     for category in categories:
         for queue in queues:
-            print (queue.category)
             if queue.category==category:
                 organized_queues[category].append(queue)
 
@@ -38,6 +37,7 @@ def home():
         title="Home",
         organized_queues=organized_queues,
         queues=queues)
+
 
 @main.route('/qr_code/<string:user_id>/<string:queue_id>')
 def temporary_page(user_id, queue_id):
@@ -48,6 +48,7 @@ def temporary_page(user_id, queue_id):
         user_id=user_id,
         queue_id=queue_id,
     )
+
 
 @main.route('/queues/<string:queue_id>')
 def queue(queue_id):
@@ -84,6 +85,7 @@ def login():
         flash ("You're already logged in, please logout first")
         return redirect(url_for('main.home'))
     return render_template("login.html", title="Login")
+
 
 @main.route('/sign-up', methods=['GET', 'POST'])
 def signup():
