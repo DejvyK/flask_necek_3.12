@@ -48,11 +48,7 @@
                             <p>
                                 {{user.email}}
                             </p>
-                            <form action="{{url_for('api.remove_from_queue', user_id=user._id, queue_id=active_queue._id)}}" method="POST">
-                                <button type="submit" class="btn btn-secondary">
-                                    Remove
-                                </button>
-                            </form>
+                            {{remove_user_from_queue_form(active_queue._id, user._id)}}
                         </div>
                         {% endif %}
                     {% endfor %} 
@@ -89,19 +85,6 @@
                             <div>
                                 {{delete_queue_form(queue)}}
                                 {{reactivate_queue_form(queue)}}
-                                <form action="{{url_for('admin.reactivate_queue')}}" method="POST">
-                                    <input
-                                    type="text"
-                                    value="{{queue._id}}"
-                                    hidden="true"
-                                    readonly="true"
-                                    id="queue_id"
-                                    name="queue_id"
-                                    >
-                                    <button type="submit" class="btn btn-primary">
-                                        REACTIVATE
-                                    </button>
-                                </form>
                             </div>
                         </div>
                     {% endfor %}

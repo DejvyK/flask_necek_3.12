@@ -39,7 +39,30 @@ class Reactivate_Queue(FlaskForm):
         ],
         render_kw = {
             'readonly' : 'true',
+            'hidden' : 'true'
         }
     )
 
     submit_reactivate_queue = SubmitField('Reactivate Queue')
+
+class Remove_User_From_Queue(FlaskForm):
+    queue_id = StringField('Queue ID',
+        validators = [
+            DataRequired()
+        ],
+        render_kw = {
+            'readonly' : 'true',
+            'hidden' : 'true'
+        }
+    )
+    user_id = StringField('User ID',
+        validators = [
+            DataRequired()
+        ],
+        render_kw = {
+            'readonly' : 'true',
+            'hidden' : 'true'
+        }
+    )
+
+    submit_remove_user = SubmitField('Remove User')

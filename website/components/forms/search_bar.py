@@ -15,7 +15,4 @@ def component():
             {form.submit_search_bar}
         </div>
     </form>
-
-    
-    
     """)

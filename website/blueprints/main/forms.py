@@ -21,7 +21,7 @@ class Add_User_To_Queue(FlaskForm):
             'hidden' : 'true'
         }
     )
-    submit_add_user_to_queue = SubmitField('Submit')
+    submit_add_user_to_queue = SubmitField('Join Queue')
 
 
 class Search_Bar(FlaskForm):

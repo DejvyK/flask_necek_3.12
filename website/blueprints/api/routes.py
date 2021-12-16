@@ -1,12 +1,9 @@
 from flask import Blueprint, jsonify, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 
-from website.models.notes import Note
 from website.models.users import User
 from website.models.admincode import AdminCode
 from website.models.queue import Queue
-
-from website.utils.search_func import Leven
 
 from secrets import token_hex
 import json
@@ -20,8 +17,6 @@ import json
 # active-queues after midnight are reset, 
 # deactivated queues are deleted
 
-
-# add search bar for cats (last)
 
 api = Blueprint('api', __name__,
     url_prefix='/api')
@@ -45,18 +40,6 @@ def add_to_queue():
         flash ("you're already in the queue")
 
     return redirect(url_for('main.home'))
-
-# one user sends 
-@api.route('/remove_from_queue/<string:user_id>/<string:queue_id>', methods=["GET", "POST"])
-def remove_from_queue(user_id, queue_id):
-    active_queue = Queue.get(by="_id", value=queue_id)
-    result = active_queue.remove_user(user_id)
-    if result:
-        flash("we removed you from the queue!")
-    else:
-        flash ("something went wrong")
-
-    return redirect(url_for('admin.home'))
 
 
 @api.route('/get_position/<string:user_id>', methods=["GET", "POST"])

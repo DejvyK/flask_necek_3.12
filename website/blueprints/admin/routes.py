@@ -2,11 +2,13 @@ from flask import Blueprint, request, redirect, url_for, flash, render_template
 from flask_login import current_user, login_required
 from website.models.queue import Queue
 
+
 # COMPONENTS
 from website.components.forms.create_queue import component as create_queue_form
 from website.components.forms.delete_queue import component as delete_queue_form
 from website.components.forms.reactivate_queue import component as reactivate_queue_form
-
+from website.components.forms.search_bar import component as search_bar
+from website.components.forms.remove_user_from_queue import component as remove_user_from_queue_form
 
 admin = Blueprint('admin', __name__,
     url_prefix='/admin')
@@ -16,7 +18,9 @@ def load_components():
     return dict(
         create_queue_form=create_queue_form,
         delete_queue_form=delete_queue_form,
-        reactivate_queue_form=reactivate_queue_form
+        reactivate_queue_form=reactivate_queue_form,
+        search_bar=search_bar,
+        remove_user_from_queue_form=remove_user_from_queue_form,
     )
 
 
@@ -113,3 +117,18 @@ def reactivate_queue():
         return redirect(url_for('admin.home'))
 
 
+
+@admin.route('/remove_user_from_queue', methods=["GET", "POST"])
+@login_required
+def remove_user_from_queue():
+    queue_id = request.form.get("queue_id")
+    user_id = request.form.get("user_id")
+
+    active_queue = Queue.get(by="_id", value=queue_id)
+    result = active_queue.remove_user(user_id)
+    if result:
+        flash("we removed you from the queue!")
+    else:
+        flash ("something went wrong")
+
+    return redirect(url_for('admin.home'))
