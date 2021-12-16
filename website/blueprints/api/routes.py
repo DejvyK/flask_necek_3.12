@@ -76,15 +76,4 @@ def check_position():
 @api.route('/search', methods=["GET", "POST"])
 def search():
     query = request.form.get("query")
-    queues = Queue.get(getall=True)
-
-    for queue in queues:
-        print (queue._id)
-
-    search = Leven()
-
-
-    print (query)
-    # print (search)
-
-    return redirect(url_for('main.home'))
+    return redirect(url_for('main.search_results', query=query))

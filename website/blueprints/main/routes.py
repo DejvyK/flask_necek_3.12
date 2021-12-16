@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
+from Levenshtein import distance
 from flask_login import current_user, login_required
 from website import db
 from website.models.queue import Queue
+
 
 
 # COMPONENTS
@@ -11,7 +13,6 @@ from website.components.forms.register_user import component as register_user
 from website.components.forms.search_bar import component as search_bar
 
 main = Blueprint('main', __name__)
-
 
 @main.context_processor
 def load_components():
@@ -56,13 +57,11 @@ def queue(queue_id):
     return render_template('queue.html', queue_model=queue_model)
 
 
-@main.route('/user_queues/<string:user_id>/')
+@main.route('/user_queues/<string:user_id>')
 def user_queues(user_id):
     queue_models = Queue.get(getall=True)
     
     queues = [ queue for queue in queue_models if queue.has_user(user_id) ]
-    print (queues)
-
 
     return render_template('user_queues.html',
             queues=queues,
@@ -79,12 +78,31 @@ def queue_user_positioned(user_id, queue_id):
         )
 
 
-@main.route('/login', methods=['GET', 'POST'])
+@main.route('/login')
 def login():
     if current_user.is_authenticated:
         flash ("You're already logged in, please logout first")
         return redirect(url_for('main.home'))
     return render_template("login.html", title="Login")
+
+
+@main.route('/search_results/<string:query>')
+def search_results(query):
+    matched_content = []
+    
+    queues = Queue.get(getall=True)
+
+
+    for queue in queues:
+        title_string = str(queue.title)
+        category_string = str(queue.category)
+        if distance(title_string, query) < len(title_string) - len(query) + 2 or \
+            distance(category_string, query) < len(category_string) - len(query) + 2:
+            matched_content.append(queue)
+    return render_template('search_results.html',
+        query=query,
+        matched_content=matched_content
+        )
 
 
 @main.route('/sign-up', methods=['GET', 'POST'])
