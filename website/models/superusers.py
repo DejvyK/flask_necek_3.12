@@ -1,0 +1,1 @@
+from website.models.master import Model
