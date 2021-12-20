@@ -15,9 +15,11 @@
         {% endif %}
         <section id="queues_ctnr">                
             {% for category in organized_queues  %}
-                <h3>
-                    Category: {{category}}
-                </h3>
+                {% if organized_queues[category] %}
+                    <h3>
+                        Category: {{category}}
+                    </h3>
+                {% endif %}
                 {% for queue in organized_queues[category]%}
                     <p>
                         ID: {{queue._id}}

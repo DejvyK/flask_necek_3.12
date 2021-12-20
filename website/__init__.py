@@ -37,12 +37,16 @@ def create_app(config_class=Config):
         admin.routes import admin
 
     from website.blueprints.\
+        superadmin.routes import superadmin
+
+    from website.blueprints.\
         errors.handlers import errors
 
     app.register_blueprint(main)
     app.register_blueprint(api)
     app.register_blueprint(auth)
     app.register_blueprint(admin)
+    app.register_blueprint(superadmin)
     # app.register_blueprint(errors)
 
     return app

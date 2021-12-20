@@ -32,6 +32,8 @@ class Delete_Queue(FlaskForm):
     )
     submit_delete_queue = SubmitField('Delete Queue')
 
+
+
 class Reactivate_Queue(FlaskForm):
     queue_id = StringField('Queue ID',
         validators = [
@@ -65,4 +67,4 @@ class Remove_User_From_Queue(FlaskForm):
         }
     )
 
-    submit_remove_user = SubmitField('Remove User')
+    submit_remove_user = SubmitField('Remove')

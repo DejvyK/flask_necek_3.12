@@ -11,6 +11,8 @@ from website.components.forms.add_user_to_queue import component as add_user_to_
 from website.components.forms.authorize_user import component as authorize_user
 from website.components.forms.register_user import component as register_user
 from website.components.forms.search_bar import component as search_bar
+from website.components.forms.remove_user_from_queue import component as remove_user_from_queue
+from website.components.forms.leave_queue import component as leave_queue
 
 main = Blueprint('main', __name__)
 
@@ -20,6 +22,7 @@ def load_components():
         add_user_to_queue=add_user_to_queue,
         authorize_user=authorize_user,
         register_user=register_user,
+        leave_queue=leave_queue,
         search_bar=search_bar
     )
 
@@ -29,6 +32,8 @@ def home():
     queues = Queue.get(by="active", value=1, getmany=True)
     organized_queues = { category:[] for category in categories }
 
+    # print (organized_queues)
+
     for category in categories:
         for queue in queues:
             if queue.category==category:
@@ -37,7 +42,7 @@ def home():
     return render_template("home.html",
         title="Home",
         organized_queues=organized_queues,
-        queues=queues)
+        )
 
 
 @main.route('/qr_code/<string:user_id>/<string:queue_id>')
@@ -89,9 +94,7 @@ def login():
 @main.route('/search_results/<string:query>')
 def search_results(query):
     matched_content = []
-    
     queues = Queue.get(getall=True)
-
 
     for queue in queues:
         title_string = str(queue.title)
@@ -105,7 +108,7 @@ def search_results(query):
         )
 
 
-@main.route('/sign-up', methods=['GET', 'POST'])
+@main.route('/sign-up')
 def signup():
     if current_user.is_authenticated:
         flash ("You're already logged in, please logout first")

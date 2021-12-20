@@ -2,7 +2,6 @@ from flask import Blueprint, request, redirect, url_for, flash, render_template
 from flask_login import current_user, login_required
 from website.models.queue import Queue
 
-
 # COMPONENTS
 from website.components.forms.create_queue import component as create_queue_form
 from website.components.forms.delete_queue import component as delete_queue_form
