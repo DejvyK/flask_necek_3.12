@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, RadioField,SubmitField
 from wtforms.validators import Length, DataRequired
 
 class Create_Admin_Code(FlaskForm):
@@ -42,10 +42,10 @@ class Create_Temporary_Page(FlaskForm):
             DataRequired(),
         ],
         render_kw = {
-            'placeholder' : 'Temporary User ID',
+            'readonly' : 'true',
         }    
     )
-    queue_id = StringField('Queue ID',
+    queue_id = RadioField('Queue ID',
         validators=[
             DataRequired(),
         ],
@@ -57,4 +57,13 @@ class Create_Temporary_Page(FlaskForm):
 
 
 class Create_Temporary_User(FlaskForm):
-    pass
+    user_id = StringField('Temporary User ID',
+        validators=[
+            DataRequired(),
+        ],
+        render_kw = {
+            'readonly' : 'true',
+        }    
+    )
+    submit_create_temporary_user = SubmitField('Create User')
+

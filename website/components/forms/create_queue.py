@@ -18,7 +18,6 @@ def component():
 
     return Markup(f"""
     <form action="{action}" method="POST">
-        
         <div class="form-group">
             {form.title.label}
             {form.title}

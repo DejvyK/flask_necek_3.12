@@ -15,10 +15,31 @@
             <h1>
                 Create Temporary User
             </h1>
-            {{create_temporary_page_form(token_hex(6), '49309830583')}}
+            {{create_temporary_user_form()}}
         </div>
 
 
+            <div>
+                <h1>
+                    Manage Temporary Users (Add them to Queues, Create Tickets)
+                </h1>
+                {% for user in temps %}
+                    <div>
+                        <p>
+                            User ID: {{user._id}}
+                        </p>
+                        <div>
+                            <p>Add temporary user to a queue (temporary users can only join one queue)</p>
+                            {{create_temporary_page_form(user._id)}}
+                        </div>
+
+                    </div>
+                    <p>
+                        Select from a dropdown of queues, add them to 
+                    </p>
+                {% endfor %}
+
+            </div>
 
         <div class="admins_ctnr">
         <h1>

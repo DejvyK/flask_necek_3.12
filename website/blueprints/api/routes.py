@@ -27,7 +27,6 @@ def create_tables():
     return redirect(url_for('main.home'))
 
 
-
 @api.route('/add_to_queue', methods=["GET", "POST"])
 @login_required
 def add_to_queue():
