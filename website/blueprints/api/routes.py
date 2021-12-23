@@ -8,16 +8,6 @@ from website.models.queue import Queue
 from secrets import token_hex
 import json
 
-# even if temp_user doesn't have an account
-# add user to queue (end) with qr-code
-# super-user, can print a ticket (qr code on the ticket)
-# join queue through qr code
-# webpage will show exact position
-
-# active-queues after midnight are reset, 
-# deactivated queues are deleted
-
-
 api = Blueprint('api', __name__,
     url_prefix='/api')
 
@@ -58,18 +48,26 @@ def leave_queue():
     return redirect(url_for('main.user_queues', user_id=current_user._id))
 
 
-@api.route('/get_position/<string:user_id>', methods=["GET", "POST"])
-def get_position(user_id):
+@api.route('/get_position/<string:user_id>/<string:queue_id>', methods=["GET", "POST"])
+def get_position(user_id, queue_id):
     active_queue = Queue.get(by="active", value="1")
     data_list = active_queue.data.split('$')
     position = data_list.index(user_id)
     return position
 
-@api.route('/check_position')
-def check_position():
+@api.route('/check_position/<string:user_id>/<string:queue_id>', methods=['GET', 'POST'])
+def check_position(user_id, queue_id):
     test = {'test' : 'success'}
+    json_file = json.dumps(test)
 
-    return json.dumps(test)
+    queue = Queue.get(by='_id', value=queue_id)
+
+    position = queue.get_user_position(user_id)
+
+    if (position):
+        pos = json.dumps({'position' : position})
+        return pos, 200
+    return test, 400
 
 @api.route('/search', methods=["GET", "POST"])
 def search():

@@ -1,32 +1,30 @@
-async function check_position(){
-    let user_id;
+const position = document.querySelector('#position_p')
 
-    const res = await fetch(
-        `/api/check_position`,{
-            method: 'GET',
-            body: JSON.stringify(user_id),
-            headers: {"Content-type" : "application/json; charset=UTF-8"}
-        }
-    )
-
-    .then(res => res.json)
-    .then(json => console.log(json))
-    .catch(err => console.log(err))
-}
-
-
-const clock = new THREE.Clock()
-let clocking = function(){
-    let curr_time = clock.getElapsedTime()
+if (position){
+    const user_id = position.dataset.user_id
+    const queue_id = position.dataset.queue_id
     
-    if (curr_time < 6 && curr_time > 5 ){
-        clock.start()
-        check_position(
+    async function check_position(){
+        var res = await fetch
+        (`/api/check_position/${user_id}/${queue_id}`)
 
-        )
 
+        data = await res.json();
+        
+        position.innerHTML = data['position']
     }
     
-    requestAnimationFrame(clocking)
+    
+    const clock = new THREE.Clock()
+    let clocking = function(){
+        let curr_time = clock.getElapsedTime()
+        
+        if (curr_time < 6 && curr_time > 5 ){
+            clock.start()
+            check_position()
+        }
+        
+        requestAnimationFrame(clocking)
+    }
+    clocking();
 }
-clocking();

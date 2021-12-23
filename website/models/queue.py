@@ -19,7 +19,7 @@ class Queue(Model):
             model.category, model.title]
         
         return statement, insertions
-
+    
     @classmethod
     def get_table_statement(cls):
         statement = (f"""
@@ -98,13 +98,14 @@ class Queue(Model):
     def get_next_opening(self):
         list_len = len(self.data.split("$"))
         return list_len
+        
 
     def data_as_users(self):
         user_ids = self.data.split("$")
         users = [User.get(by="_id", value=_id)
             for _id in user_ids
             if _id != False]
-        return users
+        return users    
 
     def has_user(self, user_id):
         data_list = self.data.split('$')

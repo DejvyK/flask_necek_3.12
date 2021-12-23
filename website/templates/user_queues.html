@@ -22,6 +22,8 @@
                     <p>
                         Your positon: {{queue.get_user_position(user_id)}}
                     </p>
+                    <a href="{{url_for('main.queue', queue_id=queue._id)}}">go to queue page</a>
+                    <br>
                     <a href="{{url_for('main.temporary_page', user_id=user_id, queue_id=queue._id)}}">Go To QR Code Page</a>
                     {{leave_queue(queue)}}
                 </div>

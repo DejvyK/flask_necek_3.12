@@ -30,7 +30,13 @@ def load_components():
 @superadmin.route('/')
 @login_required
 def home():
-    active_queues = Queue.get(by='active', value=1)
+    if current_user.is_authenticated:
+        if current_user.admin != 2:
+            flash ("you don't have access to that page")
+            return redirect(url_for('main.home'))
+
+    # active_queues = Queue.get(by='active', value=1)
+    active_queues = Queue.get(by='active', value=1, getmany=True)
 
     all_users = User.get(getall=True)
     temps = []
@@ -45,16 +51,28 @@ def home():
         elif user.admin == 3:
             temps.append(user)
 
-    if current_user.is_authenticated:
-        if current_user.admin != 2:
-            flash ("you don't have access to that page")
-            return redirect(url_for('main.home'))
+    
+    temporary_pages = []
+    for temp in temps:
+        for queue in active_queues:
+            if queue.has_user(temp._id):
+                temporary_page = {
+                    'user_id' : temp._id,
+                    'queue_id' : queue._id
+                }
+                temporary_pages.append(temporary_page)
+
+    for page in temporary_pages:
+        for temp in temps:
+            if page['user_id']==temp._id:
+                temps.remove(temp)
 
     return render_template('superadmin.html',
         admins=admins,
         temps=temps,
         verified=verified,
-        active_queues=active_queues
+        active_queues=active_queues,
+        temporary_pages=temporary_pages,
         )
 
 

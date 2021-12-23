@@ -47,12 +47,16 @@ def home():
 
 @main.route('/qr_code/<string:user_id>/<string:queue_id>')
 def temporary_page(user_id, queue_id):
-    queue_model = Queue.get(by='_id', value=queue_id)
+    queue = Queue.get(by='_id', value=queue_id)
     temp_user = ""
+
+    position = queue.get_user_position(user_id)
     
     return render_template('temp.html',
         user_id=user_id,
         queue_id=queue_id,
+        queue=queue,
+        position=position
     )
 
 
@@ -75,10 +79,11 @@ def user_queues(user_id):
 
 @main.route('/queue_positioned/<string:user_id>/<string:queue_id>')
 def queue_user_positioned(user_id, queue_id):
-    queue_model = Queue.get(by='_id', value=queue_id)
-    position = queue_model.get_user_position(user_id)
+    queue = Queue.get(by='_id', value=queue_id)
+    position = queue.get_user_position(user_id)
     return render_template('queue_positioned.html',
             queue=queue,
+            user_id=user_id,
             position=position
         )
 

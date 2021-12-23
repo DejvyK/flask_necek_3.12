@@ -41,6 +41,29 @@
 
             </div>
 
+
+        <div>
+            <h1>
+                Temporary Pages
+            </h1>
+            {% for page in temporary_pages %}
+                <div class="page">
+                    <p>
+                        User ID: {{page['user_id']}}
+                    </p>
+                    <p>
+                        Queue ID:{{page['queue_id']}}
+                    </p>
+                    <p>
+                        Page Link: <a 
+                            href="{{url_for('main.temporary_page', user_id=page['user_id'], queue_id=page['queue_id'])}}">
+                            {{url_for('main.temporary_page', user_id=page['user_id'], queue_id=page['queue_id'])}}
+                        </a>
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+
         <div class="admins_ctnr">
         <h1>
             Admins currently in the database
