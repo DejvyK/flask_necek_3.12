@@ -5,6 +5,16 @@ class Queue(Model):
     mtype = 'queue'
     tablename = 'queues'
 
+    @staticmethod
+    def get_active_admin_queue(user_id):
+        all_admin_queues = Queue.get(by="user_id", value=user_id, getmany=True)
+        active = ""
+        for queue in all_admin_queues:
+            if queue.active==1:
+                return queue
+        return False
+
+
     @classmethod
     def get_insert_statement(cls, model):
         statement = (f"""
@@ -67,6 +77,15 @@ class Queue(Model):
         self.category = mdict['category']
         self.title = mdict['title']
 
+    @property
+    def as_dict(self):
+        return {
+            '_id' : self._id,
+            'data' : self.data,
+            'category' : self.category,
+            'title' : self.title,
+        }
+
     def remove_user(self, user_id):
         data_list = self.data.split('$')
         data_list.remove(user_id)
@@ -112,22 +131,7 @@ class Queue(Model):
         if user_id in data_list:
             return True
         return False
-        # problem: discovering what queues user is in takes too much time
-        # solution 1: keep track of two things:
-            #a queues column in the user table will keep track of what queues the user is in
-            #a data column in the queue table will keep track of what users the queue contains
-            # con: lack of concurrency
 
-        #solution 2: when a user needs to see what queues they're in, pull all queues, run queue.has_user, and append a list
-
-    @staticmethod
-    def get_active_admin_queue(user_id):
-        all_admin_queues = Queue.get(by="user_id", value=user_id, getmany=True)
-        active = ""
-        for queue in all_admin_queues:
-            if queue.active==1:
-                return queue
-        return False
 
     def __str__(self):
         return (f"""

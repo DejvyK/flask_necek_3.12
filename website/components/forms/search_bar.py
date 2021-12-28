@@ -4,9 +4,8 @@ from website.blueprints.main.forms import Search_Bar
 
 def component():
     form = Search_Bar()
-    action = url_for('api.search')
     return Markup(f"""
-    <form action="{action}" method="POST">
+    <form id="search_form">
         <div class="form-group">
             {form.query.label}
             {form.query}

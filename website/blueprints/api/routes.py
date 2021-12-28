@@ -1,12 +1,15 @@
 from flask import Blueprint, jsonify, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 
+from Levenshtein import distance
+from secrets import token_hex
+import json
+
+
 from website.models.users import User
 from website.models.admincode import AdminCode
 from website.models.queue import Queue
 
-from secrets import token_hex
-import json
 
 api = Blueprint('api', __name__,
     url_prefix='/api')
@@ -57,9 +60,6 @@ def get_position(user_id, queue_id):
 
 @api.route('/check_position/<string:user_id>/<string:queue_id>', methods=['GET', 'POST'])
 def check_position(user_id, queue_id):
-    test = {'test' : 'success'}
-    json_file = json.dumps(test)
-
     queue = Queue.get(by='_id', value=queue_id)
 
     position = queue.get_user_position(user_id)
@@ -67,9 +67,38 @@ def check_position(user_id, queue_id):
     if (position):
         pos = json.dumps({'position' : position})
         return pos, 200
-    return test, 400
 
-@api.route('/search', methods=["GET", "POST"])
-def search():
-    query = request.form.get("query")
-    return redirect(url_for('main.search_results', query=query))
+    fail = {'status' : 'failed'}
+    json_fail = json.dumps(fail)
+    
+    return json_fail, 400
+
+# @api.route('/search', methods=["GET", "POST"])
+# def search():
+#     query = request.form.get("query")
+
+
+#     return redirect(url_for('main.search_results', query=query))
+
+
+@api.route('/search/<string:query>', methods=["GET", "POST"])
+def search(query):
+    matched_content = []
+    queues = Queue.get(getall=True)
+
+    for queue in queues:
+        title_string = str(queue.title)
+        category_string = str(queue.category)
+        if distance(title_string, query) < len(title_string) - len(query) + 2 or \
+            distance(category_string, query) < len(category_string) - len(query) + 2:
+            matched_content.append(queue)
+
+    if (matched_content):
+        models_as_dict = [model.as_dict for model in matched_content if model]
+        models_as_json = json.dumps(models_as_dict)
+        return models_as_json, 200
+
+    fail = {'status' : 'failed'}
+    json_fail = json.dumps(fail)
+    
+    return json_fail, 400

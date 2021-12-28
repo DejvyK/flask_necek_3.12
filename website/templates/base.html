@@ -81,6 +81,8 @@
 
     <section id="search_bar_section">
       {{search_bar()}}
+      <div id="search_results_ctnr">
+      </div>
     </section>
 
 
@@ -141,8 +143,14 @@
 
     <script
       type="text/javascript"
-      src="{{ url_for('static', filename='index.js') }}"
+      src="{{ url_for('static', filename='js/index.js') }}"
     ></script>
+    <script
+      type="text/javascript"
+    src="{{ url_for('static', filename='js/search_results.js') }}"
+    >
+      
+    </script>
 
 
 </body>

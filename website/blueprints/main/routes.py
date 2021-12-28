@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from Levenshtein import distance
 from flask_login import current_user, login_required
+
 from website import db
 from website.models.queue import Queue
 
@@ -31,8 +31,6 @@ def home():
     categories = db.distinct_queue_categories()
     queues = Queue.get(by="active", value=1, getmany=True)
     organized_queues = { category:[] for category in categories }
-
-    # print (organized_queues)
 
     for category in categories:
         for queue in queues:
@@ -98,18 +96,24 @@ def login():
 
 @main.route('/search_results/<string:query>')
 def search_results(query):
-    matched_content = []
-    queues = Queue.get(getall=True)
+    # 2 ways to do this ajax call:
+        #1. loading up all of the models and then unlocking them as we get results from the search
+        #2. conduct a search in which the search returns a set of models everytime enter is pressed
 
-    for queue in queues:
-        title_string = str(queue.title)
-        category_string = str(queue.category)
-        if distance(title_string, query) < len(title_string) - len(query) + 2 or \
-            distance(category_string, query) < len(category_string) - len(query) + 2:
-            matched_content.append(queue)
+        # 2 seems the better route, now, adjust the api to return query models
+        # how will the process work? They will usually start their search away from a search page
+
+    # matched_content = []
+    # queues = Queue.get(getall=True)
+
+    # for queue in queues:
+    #     title_string = str(queue.title)
+    #     category_string = str(queue.category)
+    #     if distance(title_string, query) < len(title_string) - len(query) + 2 or \
+    #         distance(category_string, query) < len(category_string) - len(query) + 2:
+    #         matched_content.append(queue)
     return render_template('search_results.html',
         query=query,
-        matched_content=matched_content
         )
 
 
