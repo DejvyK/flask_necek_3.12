@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+    <h1>
+        This is the Temporary Page
+    </h1>
+    <a
+        href="{{qrcode(url_for('main.queue_user_positioned', user_id=user_id, queue_id=queue_id))}}"
+        download="qrcode.png">
+        <img
+        src="{{qrcode(url_for('main.queue_user_positioned', user_id=user_id, queue_id=queue_id))}}"
+        alt="qr code"
+        >
+    </a>
+    <p>
+        click the image to download the qr code
+    </p>
+</main>
+
+{% endblock %}

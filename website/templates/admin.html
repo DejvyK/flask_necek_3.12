@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <main>
+        <h1>
+            This is the admin page
+        </h1>
+        {{create_queue_form()}}
+
+        {% if active_queue %}
+            <h1>
+                Active Queue
+            </h1>
+            <div class="about_active">
+                <p>
+                    About this queue
+                </p>
+                <p>
+                    Category: {{active_queue.category}}
+                </p>
+                <p>
+                    Title: {{active_queue.title}}
+                </p>
+                <p>
+                    Queue ID: {{active_queue._id}}
+                </p>
+                <p>
+                    Admin ID: {{active_queue.user_id}}
+                </p>
+                <p>
+                    Active: {{active_queue.active}}
+                </p>
+                <p>
+                    Count of users in the queue: {{active_queue.data.split('$') | length -1}}
+                </p>
+            </div>
+            <div class="queue_list">
+                <div class="users_ctnr">
+                    {% for user in active_queue.data_as_users() %}
+                        {% if user %}
+                        <div class="user_ctnr">
+                            <p>
+                                Position: {{loop.index}}
+                            </p>
+                            <p>
+                                {{user.fname}}
+                            </p>
+                            <p>
+                                {{user.email}}
+                            </p>
+                            {{remove_user_from_queue_form(active_queue._id, user._id)}}
+                        </div>
+                        {% endif %}
+                    {% endfor %} 
+                </div>
+            </div>
+        {% else %}
+        {% endif %}
+
+
+        <h2>
+            Inactive Queues
+        </h2>
+        <div class="inactive_queue_list">
+            {% if inactive_queues %}
+                <div class="inactive_queues_ctnr">
+                    {% for queue in inactive_queues %}
+                        <div class="inactive_queue">
+
+                            <p>
+                                ID: {{queue._id}}
+                            </p>
+                            <p>
+                                TITLE: {{queue.title}}                                
+                            </p>
+                            <p>
+                                CATEGORY: {{queue.category}}                                
+                            </p>
+                            <p>
+                                uploaded data: {{queue.upldate}}
+                            </p>
+                            <p>
+                                last modified: {{queue.moddate}}
+                            </p>
+                            <div>
+                                {{delete_queue_form(queue)}}
+                                {{reactivate_queue_form(queue)}}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>
+                    no inactive queues
+                </p>
+            {% endif %}
+        </div>
+    </main>
+
+{% endblock %}

@@ -1,14 +1,45 @@
 {% extends 'base.html' %}
-{% block title %}
-    Home
-{% endblock  %}
 
 {% block content %}
-    
+<script src="{{url_for('static', filename='js/assets/three.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/position_checker.js')}}"></script>
 
-    <div class="blob blue" id="koleso_home" >
-        1
-    </div>
+    <main>
+        <h1>
+            Available Queues
+        </h1>
+        {% if not current_user.is_authenticated %}
+            <a href="{{url_for('main.login')}}">
+                Please login to join a queue
+            </a>
+        {% endif %}
+        <section id="queues_ctnr">                
+            {% for category in organized_queues  %}
+                <h3>
+                    Category: {{category}}
+                </h3>
+                {% for queue in organized_queues[category]%}
+                    <p>
+                        ID: {{queue._id}}
+                    </p>
+                    <p>
+                        TITLE: {{queue.title}}
+                    </p>
+                    {{add_user_to_queue(queue)}}
+                {% endfor %}
+            {% endfor %}
+        </section>
+
+        <div class="message_blob_ctnr">
+            <div class="blob blue" id="koleso_home" >
+                <p>
+                    1
+                </p>
+            </div>
+        </div>
+        
+    </main>
+
 {% endblock %}
 
 

@@ -1,63 +1,11 @@
-{% extends 'base.html' %} {% block title %} Sign_up {% endblock %}
+{% extends 'base.html' %}
+
 
 {% block content %}
-<form method="post">
-  <div class="form-group">
-    <label for="email">Tvá e-mailová adresa</label>
-    <input
-      type="email"
-      name="email"
-      id="email"
-      class="form-control"
-      placeholder="Tvůj e-mail"
-      tabindex="1"
-    />
-  </div>
-  <div class="form-group">
-    <label for="krestni_jmeno">Křestní jméno</label>
-    <input
-      type="text"
-      name="krestni_jmeno"
-      id="krestni_jmeno"
-      class="form-control"
-      placeholder="Tvoje křestní jméno"
-      tabindex="2"
-    />
-  </div>
-  <div class="form-group">
-    <label for="prijmeni">Příjmení</label>
-    <input
-      type="text"
-      name="prijmeni"
-      id="prijmeni"
-      class="form-control"
-      placeholder="Tvoje příjmení"
-      tabindex="3"
-    />
-  </div>
-  <div class="form-group">
-    <label for="password1">Heslo</label>
-    <input
-      type="password"
-      name="password1"
-      id="password1"
-      class="form-control"
-      placeholder="Vaše heslo"
-      tabindex="4"
-    />
-  </div>
-  <div class="form-group">
-    <label for="password2">Tvé heslo znovu</label>
-    <input
-      type="password"
-      name="password2"
-      id="password2"
-      class="form-control"
-      placeholder="Vaše heslo znovu"
-      tabindex="5"
-    />
-  </div>
-  <br>
-  <button type="submit" class="btn btn-primary">Odeslat</button>
-</form>
+<main>
+  <h1>
+    This is the Signup page
+  </h1>
+  {{register_user()}}
+</main>
 {% endblock %}

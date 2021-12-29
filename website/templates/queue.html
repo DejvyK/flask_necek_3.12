@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+    <h1>
+        This is a Queue that the User Sees
+    </h1>
+    <p>
+        {{queue_model._id}}
+    </p>
+    <p>
+        {{queue_model.title}}
+    </p>
+    <p>
+        {{queue_model.category}}
+    </p>
+</main>
+
+
+
+{% endblock %}
