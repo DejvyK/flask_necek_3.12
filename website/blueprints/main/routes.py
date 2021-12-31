@@ -2,17 +2,18 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import current_user, login_required
 
 from website import db
+from website.blueprints.main import CATEGORIES
 from website.models.queue import Queue
 
 
-
 # COMPONENTS
-from website.components.forms.add_user_to_queue import component as add_user_to_queue
-from website.components.forms.authorize_user import component as authorize_user
-from website.components.forms.register_user import component as register_user
-from website.components.forms.search_bar import component as search_bar
-from website.components.forms.remove_user_from_queue import component as remove_user_from_queue
-from website.components.forms.leave_queue import component as leave_queue
+from website.components.forms.main.add_user_to_queue import component as add_user_to_queue
+from website.components.forms.main.search_bar import component as search_bar
+from website.components.forms.main.leave_queue import component as leave_queue
+
+from website.components.forms.auth.authorize_user import component as authorize_user
+from website.components.forms.auth.register_user import component as register_user
+
 
 main = Blueprint('main', __name__)
 
@@ -28,11 +29,11 @@ def load_components():
 
 @main.route('/')
 def home():
-    categories = db.distinct_queue_categories()
-    queues = Queue.get(by="active", value=1, getmany=True)
-    organized_queues = { category:[] for category in categories }
+    queues = Queue.get(getall=True)
+    organized_queues = { category:[] for  \
+        category in CATEGORIES }
 
-    for category in categories:
+    for category in CATEGORIES:
         for queue in queues:
             if queue.category==category:
                 organized_queues[category].append(queue)

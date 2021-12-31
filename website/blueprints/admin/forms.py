@@ -32,39 +32,26 @@ class Delete_Queue(FlaskForm):
     )
     submit_delete_queue = SubmitField('Delete Queue')
 
-
-
-class Reactivate_Queue(FlaskForm):
+class Process_Next(FlaskForm):
     queue_id = StringField('Queue ID',
         validators = [
-            DataRequired()
+            DataRequired(), Length(min=1, max=50)
         ],
         render_kw = {
             'readonly' : 'true',
             'hidden' : 'true'
         }
-    )
+    )    
+    submit_process_next = SubmitField('Process Next')
 
-    submit_reactivate_queue = SubmitField('Reactivate Queue')
-
-class Remove_User_From_Queue(FlaskForm):
+class Process_Previous(FlaskForm):
     queue_id = StringField('Queue ID',
         validators = [
-            DataRequired()
+            DataRequired(), Length(min=1, max=50)
         ],
         render_kw = {
             'readonly' : 'true',
             'hidden' : 'true'
         }
-    )
-    user_id = StringField('User ID',
-        validators = [
-            DataRequired()
-        ],
-        render_kw = {
-            'readonly' : 'true',
-            'hidden' : 'true'
-        }
-    )
-
-    submit_remove_user = SubmitField('Remove')
+    )    
+    submit_process_previous = SubmitField('Process Previous')

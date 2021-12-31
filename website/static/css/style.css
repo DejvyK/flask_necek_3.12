@@ -26,13 +26,20 @@ body {
     width: 33vw;
 }
 
-.user_ctnr{
+
+
+.user_ctnr,
+.processing_ctnr{
     background-color: blue;
     color: #fff;
     text-align: center;
     padding: .25em;
     border-radius: .9em;
     font-weight: 600;
+}
+
+.processing_ctnr{
+    background-color: green;
 }
 
 .message_blob_ctnr{

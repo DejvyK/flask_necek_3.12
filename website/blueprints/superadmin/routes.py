@@ -5,12 +5,12 @@ from website.models.queue import Queue
 from website.models.admincode import AdminCode
 from website.models.users import User
 
-from website.components.forms.create_admin_code import component as create_admin_code_form
-from website.components.forms.delete_admin import component as delete_admin_form
-from website.components.forms.create_temporary_page import component as create_temporary_page_form
-from website.components.forms.create_temporary_user import component as create_temporary_user_form
+from website.components.forms.superadmin.create_admin_code import component as create_admin_code_form
+from website.components.forms.superadmin.delete_admin import component as delete_admin_form
+from website.components.forms.superadmin.create_temporary_page import component as create_temporary_page_form
+from website.components.forms.superadmin.create_temporary_user import component as create_temporary_user_form
 # from website.components.forms.create_temporary_page import component as create_temporary_page_form
-from website.components.forms.search_bar import component as search_bar
+from website.components.forms.main.search_bar import component as search_bar
 
 
 superadmin = Blueprint('superadmin', __name__,

@@ -5,45 +5,53 @@
         <h1>
             Hello {{current_user.fname}}
         </h1>
-        <h1>
+        <h3>
             This is the admin page
-        </h1>
-        {{create_queue_form()}}
-
-        {% if active_queue %}
-            <h1>
-                Active Queue
-            </h1>
-            <div class="about_active">
+        </h3>
+        {% if queue %}
+            <h2>
+                Queue
+            </h2>
+            <div class="about">
                 <p>
                     About this queue
                 </p>
                 <p>
-                    Category: {{active_queue.category}}
+                    Currently Processing: {{queue.processing}}
+                </p>
+                {% if processing_user %}
+                    <p>
+                        Currently Processing User: {{processing_user}}
+                    </p>
+                {% endif %}
+                <p>
+                    Category: {{queue.category}}
                 </p>
                 <p>
-                    Title: {{active_queue.title}}
+                    Title: {{queue.title}}
                 </p>
                 <p>
-                    Queue ID: {{active_queue._id}}
+                    Queue ID: {{queue._id}}
                 </p>
                 <p>
-                    Admin ID: {{active_queue.user_id}}
+                    Admin ID: {{queue.user_id}}
                 </p>
                 <p>
-                    Active: {{active_queue.active}}
-                </p>
-                <p>
-                    Count of users in the queue: {{active_queue.data.split('$') | length -1}}
+                    Count of users in the queue: {{queue.data.split('$') | length -1}}
                 </p>
             </div>
             <div class="queue_list">
+                {{process_previous_form(queue)}}
+                {{process_next_form(queue)}}
                 <div class="users_ctnr">
-                    {% for user in active_queue.data_as_users() %}
-                        {% if user %}
-                        <div class="user_ctnr">
+                    {% for user in queue.data_as_users() %}
+                        {% if user._id == processing_user._id %}
+                            <div class="processing_ctnr">
+                        {% else %}
+                            <div class="user_ctnr">
+                        {% endif %}
                             <p>
-                                Position: {{loop.index}}
+                                Position: {{loop.index -1}}
                             </p>
                             <p>
                                 {{user.fname}}
@@ -51,53 +59,13 @@
                             <p>
                                 {{user.email}}
                             </p>
-                            {{remove_user_from_queue_form(active_queue._id, user._id)}}
                         </div>
-                        {% endif %}
                     {% endfor %} 
                 </div>
             </div>
         {% else %}
+            {{create_queue_form()}}
         {% endif %}
-
-
-        <h2>
-            Inactive Queues
-        </h2>
-        <div class="inactive_queue_list">
-            {% if inactive_queues %}
-                <div class="inactive_queues_ctnr">
-                    {% for queue in inactive_queues %}
-                        <div class="inactive_queue">
-
-                            <p>
-                                ID: {{queue._id}}
-                            </p>
-                            <p>
-                                TITLE: {{queue.title}}                                
-                            </p>
-                            <p>
-                                CATEGORY: {{queue.category}}                                
-                            </p>
-                            <p>
-                                uploaded data: {{queue.upldate}}
-                            </p>
-                            <p>
-                                last modified: {{queue.moddate}}
-                            </p>
-                            <div>
-                                {{delete_queue_form(queue)}}
-                                {{reactivate_queue_form(queue)}}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p>
-                    no inactive queues
-                </p>
-            {% endif %}
-        </div>
     </main>
 
 {% endblock %}
