@@ -17,6 +17,24 @@
     <p>
         click the image to download the qr code
     </p>
+    <div class="queue_model_ctnr">
+        <h1>
+            Information about the Queue
+        </h1>
+        <p>
+            ID: {{queue._id}}
+        </p>
+        <p>
+            Title: {{queue.title}}
+        </p>
+        <p>
+            Count of Users: {{queue.get_next_opening() - 1}}
+        </p>
+        <p>
+            Position: {{position}}
+        </p>
+    </div>
+
 </main>
 
 {% endblock %}

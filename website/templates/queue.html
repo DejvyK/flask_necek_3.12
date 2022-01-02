@@ -15,6 +15,23 @@
     <p>
         {{queue_model.category}}
     </p>
+    <p>
+        user count: {{queue_model.get_next_opening()}}
+    </p>
+    {% if current_user.is_authenticated %}
+    <p>
+        Are you in this queue?
+    </p>
+    <br>
+    <a href="{{url_for('main.temporary_page', user_id=current_user._id, queue_id=queue_model._id)}}">
+        Go to QR code page
+    </a>
+    <br>
+    <a href="{{url_for('main.queue_user_positioned', user_id=current_user._id, queue_id=queue_model._id)}}">
+        Go to positioned page
+    </a>
+
+    {% endif %}
 </main>
 
 

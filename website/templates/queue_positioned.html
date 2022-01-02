@@ -13,15 +13,24 @@
         {{queue.category}}
     </p>
     <p>
-        {{queue._id}}
+        Queue ID: {{queue._id}}
+    </p>
+    <p>
+        User ID: {{user_id}}
     </p>
 
     <div class="message_blob_ctnr">
         <div class="blob blue" id="koleso_home" >
-            <p>
+            <p
+                id="position_p"
+                data-user_id="{{user_id}}"
+                data-queue_id="{{queue._id}}"
+            >
                 {{position}}
             </p>
         </div>
+        <script src="{{url_for('static', filename='js/assets/three.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/position_checker.js')}}"></script>
     </div>
 
 </main>

@@ -3,6 +3,9 @@
 {% block content %}
     <main>
         <h1>
+            Hello {{current_user.fname}}
+        </h1>
+        <h1>
             This is the admin page
         </h1>
         {{create_queue_form()}}

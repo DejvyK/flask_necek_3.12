@@ -1,21 +1,14 @@
 from flask import Blueprint, jsonify, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 
-from website.models.users import User
-from website.models.admincode import AdminCode
-from website.models.queue import Queue
-
+from Levenshtein import distance
 from secrets import token_hex
 import json
 
-# even if temp_user doesn't have an account
-# add user to queue (end) with qr-code
-# super-user, can print a ticket (qr code on the ticket)
-# join queue through qr code
-# webpage will show exact position
 
-# active-queues after midnight are reset, 
-# deactivated queues are deleted
+from website.models.users import User
+from website.models.admincode import AdminCode
+from website.models.queue import Queue
 
 
 api = Blueprint('api', __name__,
@@ -25,6 +18,7 @@ api = Blueprint('api', __name__,
 def create_tables():
     Queue.mk_table()
     return redirect(url_for('main.home'))
+
 
 @api.route('/add_to_queue', methods=["GET", "POST"])
 @login_required
@@ -42,21 +36,69 @@ def add_to_queue():
     return redirect(url_for('main.home'))
 
 
-@api.route('/get_position/<string:user_id>', methods=["GET", "POST"])
-def get_position(user_id):
+@api.route('/leave_queue', methods=["GET", "POST"])
+@login_required
+def leave_queue():
+    queue_id = request.form.get("queue_id")
+    user_id = request.form.get("user_id")
+
+    active_queue = Queue.get(by="_id", value=queue_id)
+    result = active_queue.remove_user(user_id)
+    if result:
+        flash("we removed you from the queue!")
+    else:
+        flash ("something went wrong")
+    return redirect(url_for('main.user_queues', user_id=current_user._id))
+
+
+@api.route('/get_position/<string:user_id>/<string:queue_id>', methods=["GET", "POST"])
+def get_position(user_id, queue_id):
     active_queue = Queue.get(by="active", value="1")
     data_list = active_queue.data.split('$')
     position = data_list.index(user_id)
     return position
 
-@api.route('/check_position')
-def check_position():
-    # return json of position
-    test = {'test' : 'success'}
+@api.route('/check_position/<string:user_id>/<string:queue_id>', methods=['GET', 'POST'])
+def check_position(user_id, queue_id):
+    queue = Queue.get(by='_id', value=queue_id)
 
-    return json.dumps(test)
+    position = queue.get_user_position(user_id)
 
-@api.route('/search', methods=["GET", "POST"])
-def search():
-    query = request.form.get("query")
-    return redirect(url_for('main.search_results', query=query))
+    if (position):
+        pos = json.dumps({'position' : position})
+        return pos, 200
+
+    fail = {'status' : 'failed'}
+    json_fail = json.dumps(fail)
+    
+    return json_fail, 400
+
+# @api.route('/search', methods=["GET", "POST"])
+# def search():
+#     query = request.form.get("query")
+
+
+#     return redirect(url_for('main.search_results', query=query))
+
+
+@api.route('/search/<string:query>', methods=["GET", "POST"])
+def search(query):
+    matched_content = []
+    queues = Queue.get(getall=True)
+
+    for queue in queues:
+        title_string = str(queue.title)
+        category_string = str(queue.category)
+        if distance(title_string, query) < len(title_string) - len(query) + 2 or \
+            distance(category_string, query) < len(category_string) - len(query) + 2:
+            matched_content.append(queue)
+
+    if (matched_content):
+        models_as_dict = [model.as_dict for model in matched_content if model]
+        models_as_json = json.dumps(models_as_dict)
+        return models_as_json, 200
+
+    fail = {'status' : 'failed'}
+    json_fail = json.dumps(fail)
+    
+    return json_fail, 400

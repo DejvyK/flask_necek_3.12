@@ -50,3 +50,12 @@ body {
 .inactive_queue{
     border: 1px solid #000;
 }
+
+.query_result{
+    width: 10em;
+    height: 5em;
+}
+
+#search_results_ctnr{
+    background-color: yellow;
+}

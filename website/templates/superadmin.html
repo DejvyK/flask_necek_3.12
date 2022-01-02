@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+    <section id="superadmin_section">
+        <div>
+            <h1>
+                Create Administrator Code
+            </h1>
+            {{create_admin_code_form()}}
+        </div>
+        
+        <div>
+            <h1>
+                Create Temporary User
+            </h1>
+            {{create_temporary_user_form()}}
+        </div>
+
+
+            <div>
+                <h1>
+                    Manage Temporary Users (Add them to Queues, Create Tickets)
+                </h1>
+                {% for user in temps %}
+                    <div>
+                        <p>
+                            User ID: {{user._id}}
+                        </p>
+                        <div>
+                            <p>Add temporary user to a queue (temporary users can only join one queue)</p>
+                            {{create_temporary_page_form(user._id)}}
+                        </div>
+
+                    </div>
+                    <p>
+                        Select from a dropdown of queues, add them to 
+                    </p>
+                {% endfor %}
+
+            </div>
+
+
+        <div>
+            <h1>
+                Temporary Pages
+            </h1>
+            {% for page in temporary_pages %}
+                <div class="page">
+                    <p>
+                        User ID: {{page['user_id']}}
+                    </p>
+                    <p>
+                        Queue ID:{{page['queue_id']}}
+                    </p>
+                    <p>
+                        Page Link: <a 
+                            href="{{url_for('main.temporary_page', user_id=page['user_id'], queue_id=page['queue_id'])}}">
+                            {{url_for('main.temporary_page', user_id=page['user_id'], queue_id=page['queue_id'])}}
+                        </a>
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="admins_ctnr">
+        <h1>
+            Admins currently in the database
+        </h1>
+            {% for admin in admins %}
+                <div class="admin">
+                    <p>
+                        {{admin._id}}
+                    </p>
+                    <p>
+                        {{admin.fname}}
+                    </p>
+                    <p>
+                        {{admin.email}}
+                    </p>
+                    {{delete_admin_form(admin._id)}}
+                </div>
+            {% endfor %}
+        </div>
+
+    </section>
+</main>
+
+{% endblock %}

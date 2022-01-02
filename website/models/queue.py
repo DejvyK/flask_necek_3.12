@@ -5,6 +5,16 @@ class Queue(Model):
     mtype = 'queue'
     tablename = 'queues'
 
+    @staticmethod
+    def get_active_admin_queue(user_id):
+        all_admin_queues = Queue.get(by="user_id", value=user_id, getmany=True)
+        active = ""
+        for queue in all_admin_queues:
+            if queue.active==1:
+                return queue
+        return False
+
+
     @classmethod
     def get_insert_statement(cls, model):
         statement = (f"""
@@ -19,7 +29,7 @@ class Queue(Model):
             model.category, model.title]
         
         return statement, insertions
-
+    
     @classmethod
     def get_table_statement(cls):
         statement = (f"""
@@ -67,6 +77,15 @@ class Queue(Model):
         self.category = mdict['category']
         self.title = mdict['title']
 
+    @property
+    def as_dict(self):
+        return {
+            '_id' : self._id,
+            'data' : self.data,
+            'category' : self.category,
+            'title' : self.title,
+        }
+
     def remove_user(self, user_id):
         data_list = self.data.split('$')
         data_list.remove(user_id)
@@ -98,35 +117,21 @@ class Queue(Model):
     def get_next_opening(self):
         list_len = len(self.data.split("$"))
         return list_len
+        
 
     def data_as_users(self):
         user_ids = self.data.split("$")
         users = [User.get(by="_id", value=_id)
             for _id in user_ids
             if _id != False]
-        return users
+        return users    
 
     def has_user(self, user_id):
         data_list = self.data.split('$')
         if user_id in data_list:
             return True
         return False
-        # problem: discovering what queues user is in takes too much time
-        # solution 1: keep track of two things:
-            #a queues column in the user table will keep track of what queues the user is in
-            #a data column in the queue table will keep track of what users the queue contains
-            # con: lack of concurrency
 
-        #solution 2: when a user needs to see what queues they're in, pull all queues, run queue.has_user, and append a list
-
-    @staticmethod
-    def get_active_admin_queue(user_id):
-        all_admin_queues = Queue.get(by="user_id", value=user_id, getmany=True)
-        active = ""
-        for queue in all_admin_queues:
-            if queue.active==1:
-                return queue
-        return False
 
     def __str__(self):
         return (f"""

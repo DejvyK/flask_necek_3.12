@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<script src="{{url_for('static', filename='js/assets/three.min.js')}}"></script>
-<script src="{{url_for('static', filename='js/position_checker.js')}}"></script>
 
     <main>
         <h1>
@@ -15,9 +13,11 @@
         {% endif %}
         <section id="queues_ctnr">                
             {% for category in organized_queues  %}
-                <h3>
-                    Category: {{category}}
-                </h3>
+                {% if organized_queues[category] %}
+                    <h3>
+                        Category: {{category}}
+                    </h3>
+                {% endif %}
                 {% for queue in organized_queues[category]%}
                     <p>
                         ID: {{queue._id}}
