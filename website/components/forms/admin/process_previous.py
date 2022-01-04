@@ -1,17 +1,16 @@
 from flask import Markup, url_for
-from website.blueprints.admin.forms import Reactivate_Queue
+from website.blueprints.admin.forms import Process_Previous
 
 def component(queue):
-    action = url_for('admin.reactivate_queue')
-    form = Reactivate_Queue()
-
+    action = url_for('admin.process_previous')
+    form = Process_Previous()
     return Markup(f"""
-    <form method="POST" action={action}>
+    <form action="{action}" method="POST">
         <div class="form-group">
             {form.queue_id(value=queue._id)}
         </div>
         <div class="form-group">
-            {form.submit_reactivate_queue}
+            {form.submit_process_previous}
         </div>
     </form>
     """)

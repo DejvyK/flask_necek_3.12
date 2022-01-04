@@ -15,11 +15,6 @@ class Create_Admin_Code(FlaskForm):
     )
     submit_admin_code = SubmitField('Submit')
 
-
-class Delete_Inactive_Queues(FlaskForm):
-    # routine
-    pass
-
 class Clear_Active_Queues(FlaskForm):
     submit_clear_queues = SubmitField('Submit')
 

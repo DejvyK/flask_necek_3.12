@@ -42,15 +42,45 @@ def leave_queue():
     queue_id = request.form.get("queue_id")
     user_id = request.form.get("user_id")
 
-    active_queue = Queue.get(by="_id", value=queue_id)
-    result = active_queue.remove_user(user_id)
-    if result:
+    queue = Queue.get(by="_id", value=queue_id)
+
+    queue.skip_users += f"{user_id}$"
+
+    try:
+        Queue.update(queue)
         flash("we removed you from the queue!")
-    else:
+    except Exception as err:        
+        print (err)
         flash ("something went wrong")
+
     return redirect(url_for('main.user_queues', user_id=current_user._id))
 
 
+
+@api.route('/rejoin_queue', methods=['GET', 'POST'])
+@login_required
+def rejoin_queue():
+    user_id = request.form.get('user_id')
+    queue_id = request.form.get('queue_id')
+
+    queue = Queue.get(by='_id', value=queue_id)
+
+    # check if the user is already passed, then put them at the end of the queue
+
+    
+
+    if queue.has_skipped(user_id):
+        if queue.check_skipped(user_id):
+            
+            flash ("they've already called for your line, we have to")
+
+
+    #     queue.remove_skipped(user_id)
+
+
+
+
+    return redirect(url_for('main.user_queues', user_id=user_id))
 @api.route('/get_position/<string:user_id>/<string:queue_id>', methods=["GET", "POST"])
 def get_position(user_id, queue_id):
     active_queue = Queue.get(by="active", value="1")
