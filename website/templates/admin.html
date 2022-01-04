@@ -41,12 +41,16 @@
                 </p>
             </div>
             <div class="queue_list">
-                {{process_previous_form(queue)}}
-                {{process_next_form(queue)}}
+                {% if queue.data %}
+                    {{process_previous_form(queue)}}
+                    {{process_next_form(queue)}}
+                {% endif %}
                 <div class="users_ctnr">
                     {% for user in queue.data_as_users() %}
                         {% if user._id == processing_user._id %}
                             <div class="processing_ctnr">
+                        {% elif queue.has_skipped(user._id) %}
+                            <div class="skipped_ctnr">
                         {% else %}
                             <div class="user_ctnr">
                         {% endif %}

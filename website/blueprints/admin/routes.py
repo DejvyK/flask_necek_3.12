@@ -1,6 +1,7 @@
 from flask import Blueprint, request, redirect, url_for, flash, render_template
 from flask_login import current_user, login_required
 from website.models.queue import Queue
+from website.models.users import User
 
 # COMPONENTS
 from website.components.forms.admin.create_queue import component as create_queue_form
@@ -35,7 +36,10 @@ def home():
 
     queue = Queue.get(by="user_id", value=current_user._id)
 
-    processing_user = queue.get_processing_user()    
+    if queue:
+        processing_user = queue.get_processing_user()    
+    else:
+        processing_user = ""
 
     return render_template("admin.html",
         title="Admin",
@@ -49,11 +53,12 @@ def home():
 def create_queue():
     if request.method=='POST':            
         mdict = {
+            'user_id' : current_user._id,
             'data' : '',
             'category' : request.form.get('category'),
             'title' : request.form.get('title'),
             'processing' : 0,
-            'user_id' : current_user._id
+            'skip_users' : '',
         }
         new_queue = Queue(mdict)
 
@@ -73,6 +78,7 @@ def delete_queue():
     queue_id = request.form.get("queue_id")
     
     queue = Queue.get(by='_id', value=queue_id)
+
     print(queue_id)
     try:
         Queue.remove(queue)
@@ -94,6 +100,16 @@ def process_previous():
     
     if queue.processing > 0:
         queue.processing -= 1
+        # next_user_id = queue.data_as_list[queue.processing]
+
+        skip = True
+        while skip:
+            next_user_id = queue.data_as_list[queue.processing]
+            if queue.has_skipped(next_user_id):
+                queue.processing -= 1
+            else:
+                skip = False
+                # break
         try:
             Queue.update(queue)
             flash ('updated')
@@ -106,26 +122,40 @@ def process_previous():
     return redirect(url_for('admin.home'))
 
 
-
-
-
 @admin.route('/process_next', methods=['GET', 'POST'])
 @login_required
 def process_next():
     queue_id = request.form.get("queue_id")
 
     queue = Queue.get(by="_id", value=queue_id)
-    
-    if queue.processing >= 0 and queue.processing < (len(queue.data_as_list)-2):
+
+    if queue.processing >= 0 and queue.processing < len(queue.data_as_list):
         queue.processing += 1
-        try:
-            Queue.update(queue)
-            flash ('updated')
-        except Exception as err:
-            print (err)
-            flash ('something went wrong')
+
+        skip = True
+        while skip:
+            try:
+                next_user_id = queue.data_as_list[queue.processing]
+            except Exception as err:
+                print (err)
+                break
+            if queue.has_skipped(next_user_id):
+                queue.processing += 1
+            else:
+                skip = False
+                # break
+
+        if queue.processing >= 0 and queue.processing < len(queue.data_as_list):
+            try:
+                Queue.update(queue)
+                flash ('updated')
+            except Exception as err:
+                print (err)
+                flash ('something went wrong')
+        else:
+            pass
+
     else:
         flash ("you're already at the end of the queue")
-
 
     return redirect(url_for('admin.home'))

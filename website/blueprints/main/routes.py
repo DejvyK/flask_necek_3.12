@@ -10,6 +10,7 @@ from website.models.queue import Queue
 from website.components.forms.main.add_user_to_queue import component as add_user_to_queue
 from website.components.forms.main.search_bar import component as search_bar
 from website.components.forms.main.leave_queue import component as leave_queue
+from website.components.forms.main.rejoin_queue import component as rejoin_queue_form
 
 from website.components.forms.auth.authorize_user import component as authorize_user
 from website.components.forms.auth.register_user import component as register_user
@@ -24,7 +25,8 @@ def load_components():
         authorize_user=authorize_user,
         register_user=register_user,
         leave_queue=leave_queue,
-        search_bar=search_bar
+        search_bar=search_bar,
+        rejoin_queue_form=rejoin_queue_form,
     )
 
 @main.route('/')
@@ -95,29 +97,6 @@ def login():
     return render_template("login.html", title="Login")
 
 
-@main.route('/search_results/<string:query>')
-def search_results(query):
-    # 2 ways to do this ajax call:
-        #1. loading up all of the models and then unlocking them as we get results from the search
-        #2. conduct a search in which the search returns a set of models everytime enter is pressed
-
-        # 2 seems the better route, now, adjust the api to return query models
-        # how will the process work? They will usually start their search away from a search page
-
-    # matched_content = []
-    # queues = Queue.get(getall=True)
-
-    # for queue in queues:
-    #     title_string = str(queue.title)
-    #     category_string = str(queue.category)
-    #     if distance(title_string, query) < len(title_string) - len(query) + 2 or \
-    #         distance(category_string, query) < len(category_string) - len(query) + 2:
-    #         matched_content.append(queue)
-    return render_template('search_results.html',
-        query=query,
-        )
-
-
 @main.route('/sign-up')
 def signup():
     if current_user.is_authenticated:
@@ -125,4 +104,3 @@ def signup():
         return redirect(url_for('main.home'))
 
     return render_template("sign_up.html", title="Signup")
-

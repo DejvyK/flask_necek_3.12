@@ -16,15 +16,15 @@ class Queue(Model):
     def get_insert_statement(cls, model):
         statement = (f"""
         INSERT INTO {cls.tablename}
-            (_id, user_id, data, category, title)
+            (_id, user_id, data, category, title, skip_users)
         VALUES
-            (%s, %s, %s, %s, %s)
+            (%s, %s, %s, %s, %s, %s)
         """)
 
         insertions = [
             model._id, model.user_id,
-            model.data,
-            model.category, model.title
+            model.data, model.category,
+            model.title, model.skip_users
         ]
         
         return statement, insertions
@@ -39,6 +39,7 @@ class Queue(Model):
             category varchar(50),       
             title text,
             processing int DEFAULT 0,
+            skip_users text,
             upldate datetime DEFAULT CURRENT_TIMESTAMP(),
             moddate datetime DEFAULT CURRENT_TIMESTAMP(),
             FOREIGN KEY (user_id) REFERENCES users(_id)
@@ -55,6 +56,7 @@ class Queue(Model):
             category = %s,
             title = %s,
             processing = %s,
+            skip_users = %s,
             moddate = CURRENT_TIMESTAMP()
         WHERE
             _id = %s
@@ -63,7 +65,7 @@ class Queue(Model):
         updates = [
             model.data, model.category,
             model.title, model.processing,
-            model._id
+            model.skip_users, model._id
         ]
 
         return statement, updates
@@ -76,6 +78,7 @@ class Queue(Model):
         self.category = mdict['category']
         self.title = mdict['title']
         self.processing = mdict['processing']
+        self.skip_users = mdict['skip_users']
 
     @property
     def as_dict(self):
@@ -85,11 +88,19 @@ class Queue(Model):
             'category' : self.category,
             'title' : self.title,
             'processing' : self.processing,
+            'skip_users' : self.skip_users,
         }
 
     @property
     def data_as_list(self):
-        return self.data.split('$')
+        data_list = [elem for elem in self.data.split('$') if elem]
+        return data_list
+
+    @property
+    def skipped_as_list(self):
+        skip_list = [elem for elem in self.skip_users.split('$') if elem]
+        return skip_list
+
 
     def remove_user(self, user_id):
         """
@@ -97,7 +108,7 @@ class Queue(Model):
         true is returned if the action is
         successful, false if failure.
         """
-        data_list = self.data.split('$')
+        data_list = self.data_as_list
         data_list.remove(user_id)
         self.data = "$".join(data_list)
         try:
@@ -106,6 +117,18 @@ class Queue(Model):
         except Exception as err:
             print (err)
             return False
+
+    def remove_skipped (self, user_id):
+        skipped = self.skipped_as_list
+        skipped.remove(user_id)
+        self.skip_users = "$".join(skipped)
+        try:
+            Queue.update(self)
+            return True
+        except Exception as err:
+            print (err)
+            return False
+
 
     def add_user(self, user_id):
         """
@@ -136,7 +159,7 @@ class Queue(Model):
         checks how long the line
         is and returns the next open position.
         """
-        list_len = len(self.data.split("$"))
+        list_len = len(self.data_as_list)
         return list_len
         
 
@@ -144,9 +167,8 @@ class Queue(Model):
         """
         returns the data as users.
         """
-        user_ids = self.data.split("$")
         users = [User.get(by="_id", value=_id)
-            for _id in user_ids
+            for _id in self.data_as_list
             if _id]
         return users    
 
@@ -155,10 +177,44 @@ class Queue(Model):
         """
         returns true if a user is in the line.
         """
-        data_list = self.data.split('$')
-        if user_id in data_list:
+        if user_id in self.data_as_list:
             return True
         return False
+
+    def has_skipped(self, user_id):
+        """
+        returns true if a user is in the skipped data.
+        """
+        if user_id in self.skipped_as_list:
+            return True
+        return False
+
+
+    def check_skipped(self, user_id):
+        """
+        returns true if a user is in skipped, AND
+        if a user has been passed by self.processing.
+        """
+        if user_id in self.skipped_as_list:
+            max_pos = self.processing
+            min_pos = 0
+            pos = False
+            for i in range(min_pos, max_pos):
+                # if 
+                pass
+
+            # position = self.data_as_list
+            # print (position)
+            # print (self.data_as_list)
+
+
+    def requeue_user(self, user_id):
+        """
+        finds a user in the queue and moves them
+        to the end of the line. in it's place (maybe) if a fixed
+        id for a dummy or removed user (maybe just a string that says dummy )
+        """
+
 
     def get_processing_user(self):
         """
@@ -166,8 +222,7 @@ class Queue(Model):
         based on current data and current processing
         value
         """
-        data_list = self.data.split('$')
-        user_id = data_list[self.processing]
+        user_id = self.data_as_list[self.processing]
 
         user = User.get(by='_id', value=user_id)
 
@@ -185,6 +240,7 @@ class Queue(Model):
         title : {self.title}
         active : {self.active}
         processing : {self.processing}
+        skip : {self.skip_users}
 
         upload date : {self.upldate}
         last modified : {self.moddate}

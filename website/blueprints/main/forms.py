@@ -44,6 +44,27 @@ class Leave_Queue(FlaskForm):
     )
     submit_leave_queue = SubmitField('Leave Queue')
 
+class Rejoin_Queue(FlaskForm):
+    user_id = StringField('User ID',
+        validators = [
+            DataRequired()
+        ],
+        render_kw = {
+            'readonly' : 'true',
+            'hidden' : 'true'
+        }
+    )
+    queue_id = StringField ('Queue ID',
+        validators = [
+            DataRequired()
+        ],
+        render_kw = {
+            'readonly' : 'true',
+            'hidden' : 'true'
+        }
+    )
+    submit_rejoin_queue = SubmitField('Rejoin Queue')
+
 
 class Search_Bar(FlaskForm):
     query = StringField('Find a Queue',

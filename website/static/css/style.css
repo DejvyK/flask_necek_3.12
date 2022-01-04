@@ -29,7 +29,8 @@ body {
 
 
 .user_ctnr,
-.processing_ctnr{
+.processing_ctnr,
+.skipped_ctnr{
     background-color: blue;
     color: #fff;
     text-align: center;
@@ -40,6 +41,10 @@ body {
 
 .processing_ctnr{
     background-color: green;
+}
+
+.skipped_ctnr{
+    background-color: red;
 }
 
 .message_blob_ctnr{
