@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import current_user, login_required
 
 from website import db
-from website.blueprints.main import CATEGORIES
+from website.blueprints.main import CATEGORIES, META
 from website.models.queue import Queue
 
 
@@ -17,6 +17,12 @@ from website.components.forms.auth.register_user import component as register_us
 
 
 main = Blueprint('main', __name__)
+
+@main.context_processor
+def load_base():
+    return dict(
+        META=META,
+    )
 
 @main.context_processor
 def load_components():

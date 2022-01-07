@@ -10,10 +10,22 @@
         href="{{qrcode(url_for('main.queue_user_positioned', user_id=user_id, queue_id=queue_id))}}"
         download="qrcode.png">
         <img
-        src="{{qrcode(url_for('main.queue_user_positioned', user_id=user_id, queue_id=queue_id))}}"
-        alt="qr code"
+            src="{{qrcode(url_for('main.queue_user_positioned', user_id=user_id, queue_id=queue_id))}}"
+            alt="qr code"
         >
     </a>
+    <br>
+    <br>
+    <h1>
+        This QR works with the static ip address 
+    </h1>
+    <p>
+        will likely break when domain name is established
+    </p>
+    <img
+        src="{{ qrcode(META['static_ip'] + url_for('main.queue_user_positioned', user_id=user_id, queue_id=queue_id)) }}"
+        alt="qr code"
+    >
     <p>
         click the image to download the qr code
     </p>
