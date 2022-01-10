@@ -9,7 +9,7 @@ def load_user(_id):
 
 class User(Model, UserMixin):
     mtype = 'user'
-    tablename = 'users2'
+    tablename = 'users'
 
     @classmethod
     def get_insert_statement(cls, model):

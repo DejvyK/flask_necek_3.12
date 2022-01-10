@@ -189,23 +189,22 @@ class Queue(Model):
             return True
         return False
 
-
-    def check_skipped(self, user_id):
+    
+    def already_skipped(self, user_id):
         """
         returns true if a user is in skipped, AND
         if a user has been passed by self.processing.
         """
         if user_id in self.skipped_as_list:
-            max_pos = self.processing
-            min_pos = 0
-            pos = False
-            for i in range(min_pos, max_pos):
-                # if 
-                pass
+            pos = self.get_user_position(user_id)
 
-            # position = self.data_as_list
-            # print (position)
-            # print (self.data_as_list)
+            # print ('pos', pos)
+            # print ('processing', self.processing)
+            if pos:
+                self.processing += 10     
+                if self.processing >= pos:
+                    return True
+                return False
 
 
     def requeue_user(self, user_id):
@@ -214,6 +213,19 @@ class Queue(Model):
         to the end of the line. in it's place (maybe) if a fixed
         id for a dummy or removed user (maybe just a string that says dummy )
         """
+        pos = self.get_user_position(user_id)
+
+        if pos:
+            # target = self.data_as_list[pos]
+            new_data = self.data_as_list
+            new_data[pos] = "skipped"
+            self.data = "$".join(new_data)
+            self.add_user(user_id)
+            # print (pos)
+            # print (target)
+            print (user_id)
+            print (self.data_as_list)
+            print (self.data)
 
 
     def get_processing_user(self):

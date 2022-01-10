@@ -16,8 +16,11 @@ api = Blueprint('api', __name__,
 
 @api.route('/create_tables', methods=["GET", "POST"])
 def create_tables():
+    User.mk_table()
     Queue.mk_table()
-    return redirect(url_for('main.home'))
+    print ('here')
+    return 'here'
+    # return redirect(url_for('main.home'))
 
 
 @api.route('/add_to_queue', methods=["GET", "POST"])
@@ -65,22 +68,24 @@ def rejoin_queue():
 
     queue = Queue.get(by='_id', value=queue_id)
 
-    # check if the user is already passed, then put them at the end of the queue
+    if queue.already_skipped(user_id):
+        flash ("the admin has already called your number. You've been placed in back of the line.")
+        queue.requeue_user(user_id)
 
-    
+    else:
+        flash ("the admin has not called your number yet. You have been return to your position.")
 
-    if queue.has_skipped(user_id):
-        if queue.check_skipped(user_id):
-            
-            flash ("they've already called for your line, we have to")
-
-
-    #     queue.remove_skipped(user_id)
-
-
-
+    queue.remove_skipped(user_id)    
+    try:
+        # Queue.update(queue)
+        pass
+    except Exception as err:
+        print (err)
+        flash ('we could not update the queue, try again later')
 
     return redirect(url_for('main.user_queues', user_id=user_id))
+
+
 @api.route('/get_position/<string:user_id>/<string:queue_id>', methods=["GET", "POST"])
 def get_position(user_id, queue_id):
     active_queue = Queue.get(by="active", value="1")
@@ -102,13 +107,6 @@ def check_position(user_id, queue_id):
     json_fail = json.dumps(fail)
     
     return json_fail, 400
-
-# @api.route('/search', methods=["GET", "POST"])
-# def search():
-#     query = request.form.get("query")
-
-
-#     return redirect(url_for('main.search_results', query=query))
 
 
 @api.route('/search/<string:query>', methods=["GET", "POST"])
