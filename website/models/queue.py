@@ -198,10 +198,7 @@ class Queue(Model):
         if user_id in self.skipped_as_list:
             pos = self.get_user_position(user_id)
 
-            # print ('pos', pos)
-            # print ('processing', self.processing)
             if pos:
-                self.processing += 10     
                 if self.processing >= pos:
                     return True
                 return False
@@ -216,17 +213,10 @@ class Queue(Model):
         pos = self.get_user_position(user_id)
 
         if pos:
-            # target = self.data_as_list[pos]
             new_data = self.data_as_list
-            new_data[pos] = "skipped"
+            new_data[pos] = "skipped$"
             self.data = "$".join(new_data)
             self.add_user(user_id)
-            # print (pos)
-            # print (target)
-            print (user_id)
-            print (self.data_as_list)
-            print (self.data)
-
 
     def get_processing_user(self):
         """
@@ -234,9 +224,12 @@ class Queue(Model):
         based on current data and current processing
         value
         """
-        user_id = self.data_as_list[self.processing]
-
-        user = User.get(by='_id', value=user_id)
+        try:
+            user_id = self.data_as_list[self.processing]
+            user = User.get(by='_id', value=user_id)
+        except IndexError as err:
+            print ('no users in the queue')
+            return False
 
         if user:
             return user

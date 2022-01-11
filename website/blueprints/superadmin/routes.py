@@ -9,7 +9,7 @@ from website.components.forms.superadmin.create_admin_code import component as c
 from website.components.forms.superadmin.delete_admin import component as delete_admin_form
 from website.components.forms.superadmin.create_temporary_page import component as create_temporary_page_form
 from website.components.forms.superadmin.create_temporary_user import component as create_temporary_user_form
-# from website.components.forms.create_temporary_page import component as create_temporary_page_form
+
 from website.components.forms.main.search_bar import component as search_bar
 
 
@@ -35,8 +35,7 @@ def home():
             flash ("you don't have access to that page")
             return redirect(url_for('main.home'))
 
-    # active_queues = Queue.get(by='active', value=1)
-    active_queues = Queue.get(by='active', value=1, getmany=True)
+    queues = Queue.get(getall=True)
 
     all_users = User.get(getall=True)
     temps = []
@@ -54,7 +53,7 @@ def home():
     
     temporary_pages = []
     for temp in temps:
-        for queue in active_queues:
+        for queue in queues:
             if queue.has_user(temp._id):
                 temporary_page = {
                     'user_id' : temp._id,
@@ -71,10 +70,9 @@ def home():
         admins=admins,
         temps=temps,
         verified=verified,
-        active_queues=active_queues,
+        queues=queues,
         temporary_pages=temporary_pages,
         )
-
 
 
 @superadmin.route('/create_admin_code', methods=['GET', 'POST'])
