@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, request, redirect, url_for, flash, render_template
 from flask_login import current_user, login_required
 
@@ -161,3 +162,27 @@ def create_temporary_user():
 
     finally:
         return redirect(url_for('superadmin.home'))
+
+@superadmin.route('/clean_routine', methods=['GET', 'POST'])
+def clean_routine():
+    all_temps = User.get(by='admin', value=3, getmany=True)
+    all_queues = Queue.get(getall=True)
+    try:
+        if all_temps:
+            for temp in all_temps:
+                User.remove(temp)
+
+        if all_queues:
+            for queue in all_queues:
+                queue.data = ""
+                queue.skip_users = ""
+                queue.processing = 0
+                Queue.update(queue)
+
+        
+        status = {'status' : 'success'}
+    except Exception as err:
+        status = {'status' : 'fail'}
+    finally:
+        json_status = json.dumps(status)
+        return json_status
