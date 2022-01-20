@@ -46,7 +46,6 @@ def home():
             if queue.category==category:
                 organized_queues[category].append(queue)
 
-    print (organized_queues)
     return render_template("home.html",
         title="Home",
         organized_queues=organized_queues,
