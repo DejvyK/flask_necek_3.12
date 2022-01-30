@@ -26,6 +26,15 @@
   color: white;
   font-size: 3em;
   font-weight: bold;
+
+  display: flex;
+  flex-flow: column;
+}
+
+.blob p{
+  font-size: .5em;
+  text-align: center;
+
 }
 
 @keyframes pulse-black {

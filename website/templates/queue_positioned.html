@@ -26,8 +26,17 @@
                 data-user_id="{{user_id}}"
                 data-queue_id="{{queue._id}}"
             >
-                {{position}}
+                Your Position: {{position}}
             </p>
+
+            <p
+                id="processing_p"
+                data-user_id="{{user_id}}"
+                data-queue_id="{{queue._id}}"
+            >
+                Currently Processing: {{queue.processing}}
+            </p>
+
         </div>
         <script src="{{url_for('static', filename='js/assets/three.min.js')}}"></script>
         <script src="{{url_for('static', filename='js/position_checker.js')}}"></script>
