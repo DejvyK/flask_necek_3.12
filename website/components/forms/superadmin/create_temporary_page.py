@@ -7,7 +7,7 @@ def component(user_id):
     action = url_for('superadmin.create_temporary_page')
     form = Create_Temporary_Page()
 
-    queues = Queue.get(by='active', value='1', getmany=True)
+    queues = Queue.get(getall=True)
 
     choices = [f"""
     <option value={queue._id}>

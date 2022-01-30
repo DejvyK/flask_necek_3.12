@@ -69,15 +69,14 @@ def rejoin_queue():
     queue = Queue.get(by='_id', value=queue_id)
 
     if queue.already_skipped(user_id):
-        flash ("the admin has already called your number. You've been placed in back of the line.")
         queue.requeue_user(user_id)
-
+        flash ("the admin has already called your number. You've been placed in back of the line.")
     else:
         flash ("the admin has not called your number yet. You have been return to your position.")
 
     queue.remove_skipped(user_id)    
     try:
-        # Queue.update(queue)
+        Queue.update(queue)
         pass
     except Exception as err:
         print (err)

@@ -10,8 +10,6 @@ from website.components.forms.admin.process_next import component as process_nex
 from website.components.forms.admin.process_previous import component as process_previous_form
 from website.components.forms.main.search_bar import component as search_bar
 
-
-
 admin = Blueprint('admin', __name__,
     url_prefix='/admin')
 
@@ -37,9 +35,9 @@ def home():
     queue = Queue.get(by="user_id", value=current_user._id)
 
     if queue:
-        processing_user = queue.get_processing_user()    
+        processing_user = queue.get_processing_user()
     else:
-        processing_user = ""
+        processing_user = False
 
     return render_template("admin.html",
         title="Admin",
@@ -70,6 +68,8 @@ def create_queue():
 
         finally:
             return redirect(url_for('admin.home'))
+
+
 
 
 @admin.route('/delete_queue', methods=['POST', 'GET'])

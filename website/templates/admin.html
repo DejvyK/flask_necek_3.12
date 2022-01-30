@@ -66,6 +66,7 @@
                         </div>
                     {% endfor %} 
                 </div>
+                {{delete_queue_form(queue)}}
             </div>
         {% else %}
             {{create_queue_form()}}

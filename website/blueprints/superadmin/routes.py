@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, request, redirect, url_for, flash, render_template
 from flask_login import current_user, login_required
 
@@ -9,7 +10,7 @@ from website.components.forms.superadmin.create_admin_code import component as c
 from website.components.forms.superadmin.delete_admin import component as delete_admin_form
 from website.components.forms.superadmin.create_temporary_page import component as create_temporary_page_form
 from website.components.forms.superadmin.create_temporary_user import component as create_temporary_user_form
-# from website.components.forms.create_temporary_page import component as create_temporary_page_form
+
 from website.components.forms.main.search_bar import component as search_bar
 
 
@@ -35,8 +36,7 @@ def home():
             flash ("you don't have access to that page")
             return redirect(url_for('main.home'))
 
-    # active_queues = Queue.get(by='active', value=1)
-    active_queues = Queue.get(by='active', value=1, getmany=True)
+    queues = Queue.get(getall=True)
 
     all_users = User.get(getall=True)
     temps = []
@@ -54,7 +54,7 @@ def home():
     
     temporary_pages = []
     for temp in temps:
-        for queue in active_queues:
+        for queue in queues:
             if queue.has_user(temp._id):
                 temporary_page = {
                     'user_id' : temp._id,
@@ -71,10 +71,9 @@ def home():
         admins=admins,
         temps=temps,
         verified=verified,
-        active_queues=active_queues,
+        queues=queues,
         temporary_pages=temporary_pages,
         )
-
 
 
 @superadmin.route('/create_admin_code', methods=['GET', 'POST'])
@@ -163,3 +162,27 @@ def create_temporary_user():
 
     finally:
         return redirect(url_for('superadmin.home'))
+
+@superadmin.route('/clean_routine', methods=['GET', 'POST'])
+def clean_routine():
+    all_temps = User.get(by='admin', value=3, getmany=True)
+    all_queues = Queue.get(getall=True)
+    try:
+        if all_temps:
+            for temp in all_temps:
+                User.remove(temp)
+
+        if all_queues:
+            for queue in all_queues:
+                queue.data = ""
+                queue.skip_users = ""
+                queue.processing = 0
+                Queue.update(queue)
+
+        
+        status = {'status' : 'success'}
+    except Exception as err:
+        status = {'status' : 'fail'}
+    finally:
+        json_status = json.dumps(status)
+        return json_status

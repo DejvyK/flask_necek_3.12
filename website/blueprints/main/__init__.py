@@ -1,6 +1,6 @@
 CATEGORIES = [
     'hospital', 'dmv', 'grocery',
-    'market', 'auto shop'
+    'market', 'auto'
 ]
 
 META = {
