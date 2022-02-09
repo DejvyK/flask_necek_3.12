@@ -1,4 +1,5 @@
-const position = document.querySelector('#position_p')
+// const position = document.querySelector('#position_p')
+const position = document.querySelector('#processing_p')
 
 if (position){
     const user_id = position.dataset.user_id
@@ -6,7 +7,7 @@ if (position){
     
     async function check_position(){
         var res = await fetch
-        (`/api/check_position/${user_id}/${queue_id}`)
+        (`/api/check_processing/${queue_id}`)
 
 
         data = await res.json();

@@ -29,12 +29,15 @@
                 Your Position: {{position}}
             </p>
 
+            <p>
+                Currently Processing: 
+            </p>
             <p
                 id="processing_p"
                 data-user_id="{{user_id}}"
                 data-queue_id="{{queue._id}}"
             >
-                Currently Processing: {{queue.processing}}
+                {{queue.processing}}
             </p>
 
         </div>

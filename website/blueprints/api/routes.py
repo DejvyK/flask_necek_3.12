@@ -106,6 +106,20 @@ def check_position(user_id, queue_id):
     
     return json_fail, 400
 
+@api.route('/check_processing/<string:queue_id>', methods=['GET', 'POST'])
+def check_processing(queue_id):
+    queue = Queue.get(by='_id', value=queue_id)
+
+    position = queue.processing
+
+    pos = json.dumps({'position' : position})
+    return pos, 200
+
+    fail = {'status' : 'failed'}
+    json_fail = json.dumps(fail)
+    
+    return json_fail, 400
+
 
 @api.route('/search/<string:query>', methods=["GET", "POST"])
 def search(query):
