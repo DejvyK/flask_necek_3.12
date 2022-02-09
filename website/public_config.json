@@ -1,5 +1,5 @@
 {
-    "SECRET_KEY" : "hjshjsdfsdfhdjah kjshkvsdjdhjs",
+    "SECRET_KEY" : "fea847fce021dc3d46b2ccfa",
     "MYSQL_USER" : "admin",
     "MYSQL_PASSWORD" : "Upworktesting4545",
     "MYSQL_HOST" : "upwork.cdqae1xgyyu9.us-east-2.rds.amazonaws.com",
