@@ -18,9 +18,8 @@ api = Blueprint('api', __name__,
 def create_tables():
     User.mk_table()
     Queue.mk_table()
-    print ('here')
+    AdminCode.mk_table()
     return 'here'
-    # return redirect(url_for('main.home'))
 
 
 @api.route('/add_to_queue', methods=["GET", "POST"])
