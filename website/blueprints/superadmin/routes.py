@@ -182,6 +182,7 @@ def clean_routine():
         
         status = {'status' : 'success'}
     except Exception as err:
+        print (err)
         status = {'status' : 'fail'}
     finally:
         json_status = json.dumps(status)

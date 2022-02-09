@@ -100,7 +100,6 @@ def process_previous():
     
     if queue.processing > 0:
         queue.processing -= 1
-        # next_user_id = queue.data_as_list[queue.processing]
 
         skip = True
         while skip:

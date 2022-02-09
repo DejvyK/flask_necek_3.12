@@ -1,4 +1,3 @@
-// const position = document.querySelector('#position_p')
 const position = document.querySelector('#processing_p')
 
 if (position){

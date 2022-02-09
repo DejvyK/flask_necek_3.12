@@ -1,11 +1,9 @@
-from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for
+from flask import Blueprint, request, flash, redirect, url_for
 from flask_login import login_required, logout_user, login_user
 
-from website import bcrypt, login_manager
+from website import bcrypt
 from website.models.users import User
 from website.models.admincode import AdminCode
-import json
-
 
 auth = Blueprint('auth', __name__)
 
@@ -18,7 +16,6 @@ def authorize_user():
         if curr_user and bcrypt.check_password_hash(curr_user.password, password):
             login_user(curr_user, remember=True)
             if curr_user.admin==1:
-                next_page = request.args.get('next')
                 return redirect(url_for('admin.home'))
             return redirect(url_for('main.home'))
         flash ('wrong email or password')
@@ -30,7 +27,6 @@ def authorize_user():
 def logout():
     try:
         logout_user()
-        next_page = request.args.get('next')
         return redirect(url_for('main.home'))
     except Exception as err:
         print (err)
@@ -63,7 +59,6 @@ def register_user():
         try:
             User.add(new_user)
             login_user(new_user, remember=True)
-            next_page = request.args.get('next')
             flash ('successful!')
             if new_user.admin==1:
                 return redirect(url_for('admin.home'))
@@ -72,5 +67,5 @@ def register_user():
 
         except Exception as err:
             flash ('something went wrong!')
-            next_page = request.args.get('next')
+            print (err)
             return redirect(url_for('main.signup'))

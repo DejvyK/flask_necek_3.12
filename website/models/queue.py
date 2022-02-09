@@ -5,12 +5,6 @@ class Queue(Model):
     mtype = 'queue'
     tablename = 'queues'
 
-    @staticmethod
-    def get_active_admin_queue(user_id):
-        all_admin_queues = Queue.get(by="user_id", value=user_id)
-        active = ""
-        return False
-
 
     @classmethod
     def get_insert_statement(cls, model):
