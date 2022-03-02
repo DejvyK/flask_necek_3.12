@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
-from flask_login import current_user, login_required
+from flask import Blueprint, render_template, redirect, url_for, flash
+from flask_login import current_user
 
 from website import db
 from website.blueprints.main import CATEGORIES, META
@@ -27,12 +27,7 @@ def load_base():
 @main.context_processor
 def load_components():
     return dict(
-        add_user_to_queue=add_user_to_queue,
-        authorize_user=authorize_user,
-        register_user=register_user,
-        leave_queue=leave_queue,
         search_bar=search_bar,
-        rejoin_queue_form=rejoin_queue_form,
     )
 
 @main.route('/')
@@ -49,7 +44,8 @@ def home():
     return render_template("home.html",
         title="Home",
         organized_queues=organized_queues,
-        )
+        add_user_to_queue=add_user_to_queue,
+    )
 
 
 @main.route('/qr_code/<string:user_id>/<string:queue_id>')
@@ -82,6 +78,8 @@ def user_queues(user_id):
     return render_template('user_queues.html',
             queues=queues,
             user_id=user_id,
+            leave_queue=leave_queue,
+            rejoin_queue_form=rejoin_queue_form,
         )
 
 @main.route('/queue_positioned/<string:user_id>/<string:queue_id>')
@@ -100,7 +98,10 @@ def login():
     if current_user.is_authenticated:
         flash ("You're already logged in, please logout first")
         return redirect(url_for('main.home'))
-    return render_template("login.html", title="Login")
+    return render_template("login.html",
+        title="Login",
+        authorize_user=authorize_user,
+    )
 
 
 @main.route('/sign-up')
@@ -109,4 +110,7 @@ def signup():
         flash ("You're already logged in, please logout first")
         return redirect(url_for('main.home'))
 
-    return render_template("sign_up.html", title="Signup")
+    return render_template("sign_up.html",
+        title="Signup",
+        register_user=register_user,
+    )
