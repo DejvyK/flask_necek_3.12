@@ -22,10 +22,6 @@ superadmin = Blueprint('superadmin', __name__,
 def load_components():
     return dict(
         search_bar=search_bar,
-        create_admin_code_form=create_admin_code_form,
-        delete_admin_form=delete_admin_form,
-        create_temporary_page_form=create_temporary_page_form,
-        create_temporary_user_form=create_temporary_user_form
     )
 
 @superadmin.route('/')
@@ -73,7 +69,11 @@ def home():
         verified=verified,
         queues=queues,
         temporary_pages=temporary_pages,
-        )
+        create_admin_code_form=create_admin_code_form,
+        delete_admin_form=delete_admin_form,
+        create_temporary_page_form=create_temporary_page_form,
+        create_temporary_user_form=create_temporary_user_form,
+    )
 
 
 @superadmin.route('/create_admin_code', methods=['GET', 'POST'])

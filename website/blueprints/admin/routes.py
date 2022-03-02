@@ -10,16 +10,11 @@ from website.components.forms.admin.process_next import component as process_nex
 from website.components.forms.admin.process_previous import component as process_previous_form
 from website.components.forms.main.search_bar import component as search_bar
 
-admin = Blueprint('admin', __name__,
-    url_prefix='/admin')
+admin = Blueprint('admin', __name__, url_prefix='/admin')
 
 @admin.context_processor
 def load_components():
     return dict(
-        create_queue_form=create_queue_form,
-        delete_queue_form=delete_queue_form,
-        process_next_form=process_next_form,
-        process_previous_form=process_previous_form,
         search_bar=search_bar,
     )
 
@@ -42,7 +37,11 @@ def home():
     return render_template("admin.html",
         title="Admin",
         processing_user=processing_user,
-        queue=queue
+        queue=queue,
+        create_queue_form=create_queue_form,
+        delete_queue_form=delete_queue_form,
+        process_next_form=process_next_form,
+        process_previous_form=process_previous_form,
         )
 
 
@@ -68,8 +67,6 @@ def create_queue():
 
         finally:
             return redirect(url_for('admin.home'))
-
-
 
 
 @admin.route('/delete_queue', methods=['POST', 'GET'])

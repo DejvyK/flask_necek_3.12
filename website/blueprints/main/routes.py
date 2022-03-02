@@ -11,7 +11,6 @@ from website.components.forms.main.add_user_to_queue import component as add_use
 from website.components.forms.main.search_bar import component as search_bar
 from website.components.forms.main.leave_queue import component as leave_queue
 from website.components.forms.main.rejoin_queue import component as rejoin_queue_form
-
 from website.components.forms.auth.authorize_user import component as authorize_user
 from website.components.forms.auth.register_user import component as register_user
 
